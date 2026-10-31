@@ -134,7 +134,8 @@ pub struct TimerState {
 }
 
 impl TimerState {
-    fn initial(config: &TimerConfig) -> Self {
+    /// Creates the initial state (`focus/ready`) for a timer configuration.
+    pub fn initial(config: &TimerConfig) -> Self {
         let total_ms = config.focus_ms;
         Self {
             phase: Phase::Focus,
@@ -286,6 +287,17 @@ impl<C: Clock> Timer<C> {
     pub fn reset(&mut self) -> TimerSnapshot {
         self.state = TimerState::initial(&self.config);
         self.snapshot()
+    }
+
+    /// Updates the timer configuration, syncing cycle settings and adjusting ready timers.
+    pub fn update_config(&mut self, config: TimerConfig) {
+        self.config = config;
+        self.state.cycles_until_long = self.config.cycles_until_long();
+        if self.state.status == Status::Ready {
+            let total_ms = self.config.duration_ms(self.state.phase);
+            self.state.total_ms = total_ms;
+            self.state.remaining_ms = total_ms;
+        }
     }
 
     /// Evaluates the timer, advancing the phase if it expired.
