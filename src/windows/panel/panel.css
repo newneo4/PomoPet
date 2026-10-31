@@ -1,0 +1,22 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #f5f3ef;
+  color: #1f1b16;
+}
+
+.panel {
+  padding: 24px;
+}
+
+.panel__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}

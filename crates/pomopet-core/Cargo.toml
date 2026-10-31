@@ -1,0 +1,12 @@
+[package]
+name = "pomopet-core"
+description = "Timer state machine and settings for PomoPet"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
+
+[dev-dependencies]
+serde_json = "1"

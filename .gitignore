@@ -1,0 +1,26 @@
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+npm-debug.log*
+pnpm-debug.log*
+
+# Rust
+target/
+src-tauri/target/
+
+# Tauri
+src-tauri/gen/
+
+# Environment
+.env
+.env.*
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.sw?
