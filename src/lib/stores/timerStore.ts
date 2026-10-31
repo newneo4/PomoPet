@@ -179,23 +179,42 @@ class TimerStore {
   }
 
   public async toggleRunning(): Promise<void> {
-    if (this.state.alertActive) {
-      this.dismissAlert();
-      return;
-    }
-    const status = this.state.snapshot.status;
-    if (status === "running") {
-      await ipcClient.pauseTimer();
-    } else if (status === "paused") {
-      await ipcClient.resumeTimer();
-    } else {
-      await ipcClient.startTimer();
+    try {
+      if (this.state.alertActive) {
+        this.dismissAlert();
+        return;
+      }
+      const status = this.state.snapshot.status;
+      let snapshot: TimerSnapshot;
+      if (status === "running") {
+        snapshot = await ipcClient.pauseTimer();
+      } else if (status === "paused") {
+        snapshot = await ipcClient.resumeTimer();
+      } else {
+        snapshot = await ipcClient.startTimer();
+      }
+      const skew = snapshot.nowMs - Date.now();
+      this.update(() =>
+        computeDerived(snapshot, this.state.settings, skew, this.state.alertActive),
+      );
+      this.syncInterval(snapshot.status);
+    } catch (err) {
+      console.error("[PomoPet] Failed to toggle timer:", err);
     }
   }
 
   public async skip(): Promise<void> {
-    this.dismissAlert();
-    await ipcClient.skipTimer();
+    try {
+      this.dismissAlert();
+      const snapshot = await ipcClient.skipTimer();
+      const skew = snapshot.nowMs - Date.now();
+      this.update(() =>
+        computeDerived(snapshot, this.state.settings, skew, this.state.alertActive),
+      );
+      this.syncInterval(snapshot.status);
+    } catch (err) {
+      console.error("[PomoPet] Failed to skip timer:", err);
+    }
   }
 
   public async openPanel(tab?: string): Promise<void> {

@@ -84,13 +84,27 @@ body,
   }
 }
 
+.overlay__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 2px;
+}
+
+.overlay__drag-grip {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0;
+  user-select: none;
+}
+
 .overlay__phase {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 2px;
 }
 
 .overlay__clock {
