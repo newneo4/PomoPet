@@ -3,6 +3,13 @@
 //! Implemented in T1.1 (`timer`) and T1.2 (`settings`). This crate must not
 //! depend on Tauri so it stays fully testable.
 
+pub mod timer;
+
+pub use timer::{
+    Clock, Expiration, LATE_ALERT_THRESHOLD_MS, ManualClock, Phase, Status, SystemClock, Tick,
+    Timer, TimerConfig, TimerSnapshot, TimerState,
+};
+
 /// Crate identifier, kept stable for diagnostics.
 pub const CRATE_NAME: &str = "pomopet-core";
 

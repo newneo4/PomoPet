@@ -29,6 +29,9 @@ Reduce superficie de ataque y fricción. La app nunca pide elevación.
 ## ADR-009 · Idiomas
 Docs en español; código, identificadores, comentarios y commits en inglés. UI con textos externalizados (`es` por defecto, `en` secundario).
 
+## ADR-010 · Dependencias base de Rust y tooling de calidad
+`serde`/`serde_json` (MIT/Apache-2.0, serde-rs) para serializar estado, settings e IPC; `thiserror` (MIT/Apache-2.0, dtolnay) para errores tipados. En frontend, ESLint + typescript-eslint, Prettier y Vitest son tooling de desarrollo (MIT) y no se empaquetan en producción. **Revisar si**: se propone sustituir la serialización, el manejo de errores o el framework de pruebas.
+
 ## Pendientes de decidir (con responsable)
 | Tema | Opciones | Quién | Cuándo |
 |---|---|---|---|
