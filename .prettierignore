@@ -1,6 +1,8 @@
 dist/
 node_modules/
+target/
 src-tauri/target/
+fixtures/
 src-tauri/gen/
 src-tauri/icons/
 pnpm-lock.yaml
