@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "focusMin": 0,
+  "shortBreakMin": 999,
+  "longBreakMin": 0,
+  "cyclesUntilLong": 1,
+  "autoStartBreaks": true,
+  "autoStartFocus": false,
+  "alertSeconds": 1000,
+  "soundEnabled": true,
+  "volume": 99,
+  "notifyOnExpire": true,
+  "autostartWithWindows": false,
+  "clickThrough": false,
+  "overlay": {
+    "x": 2147483647,
+    "y": -2147483648,
+    "monitorId": "   ",
+    "scale": 0.1,
+    "opacity": 5
+  },
+  "activePetId": "../../evil",
+  "activeThemeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "language": "fr",
+  "reducedMotion": "sometimes",
+  "unknownField": "<script>alert(1)</script>"
+}
