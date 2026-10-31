@@ -1,4 +1,5 @@
-import { useState, type MouseEvent, type KeyboardEvent } from "react";
+import { useState, useRef, type MouseEvent, type KeyboardEvent } from "react";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useTimer } from "../../lib/stores/useTimer";
 
 export function OverlayApp() {
@@ -17,6 +18,7 @@ export function OverlayApp() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
+  const startPosRef = useRef({ x: 0, y: 0, time: 0 });
 
   const handleContextMenu = (e: MouseEvent) => {
     e.preventDefault();
@@ -24,14 +26,29 @@ export function OverlayApp() {
     setMenuOpen(true);
   };
 
-  const handleOverlayClick = (e: MouseEvent) => {
-    // If context menu is open, just close it
+  const handleMouseDown = async (e: MouseEvent) => {
+    // Only primary click initiates dragging
+    if (e.button === 0 && !menuOpen) {
+      startPosRef.current = { x: e.screenX, y: e.screenY, time: Date.now() };
+      try {
+        const win = getCurrentWindow();
+        await win.startDragging();
+      } catch {
+        // Fallback when outside Tauri (dev browser)
+      }
+    }
+  };
+
+  const handlePillClick = (e: MouseEvent) => {
     if (menuOpen) {
       setMenuOpen(false);
       return;
     }
-    // Only handle primary click
-    if (e.button === 0) {
+    // Only toggle if this was a quick click without significant movement
+    const dx = Math.abs(e.screenX - startPosRef.current.x);
+    const dy = Math.abs(e.screenY - startPosRef.current.y);
+    const dt = Date.now() - startPosRef.current.time;
+    if (dx <= 6 && dy <= 6 && dt < 500) {
       void toggleRunning();
     }
   };
@@ -67,28 +84,37 @@ export function OverlayApp() {
       <main
         className={`overlay ${alertActive ? "overlay--alert" : ""} overlay--${snapshot.status}`}
         data-tauri-drag-region
-        onClick={handleOverlayClick}
+        onMouseDown={handleMouseDown}
+        onClick={handlePillClick}
         onKeyDown={handleKeyDown}
         tabIndex={0}
         role="button"
         aria-label={`Temporizador Pomodoro: ${phaseLabel}, ${formattedTime}, ${snapshot.status}`}
       >
-        <div className="overlay__pill" data-tauri-drag-region>
+        <div className="overlay__pill" data-tauri-drag-region onMouseDown={handleMouseDown}>
           <span className="overlay__phase" data-tauri-drag-region>
             {phaseLabel}
           </span>
           <span className="overlay__clock" data-tauri-drag-region>
             {formattedTime}
           </span>
-          <span className="overlay__status" data-tauri-drag-region>
+          <button
+            type="button"
+            className="overlay__action-btn"
+            data-tauri-drag-region="false"
+            onClick={(e) => {
+              e.stopPropagation();
+              void toggleRunning();
+            }}
+          >
             {alertActive
-              ? "⏰ ¡Tiempo!"
+              ? "⏰ ¡Detener!"
               : snapshot.status === "running"
                 ? "⏸ Pausar"
                 : snapshot.status === "paused"
                   ? "▶ Reanudar"
                   : "▶ Iniciar"}
-          </span>
+          </button>
         </div>
       </main>
 

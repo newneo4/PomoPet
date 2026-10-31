@@ -3,5 +3,5 @@
   "identifier": "panel",
   "description": "Capabilities for the panel window",
   "windows": ["panel"],
-  "permissions": ["core:default"]
+  "permissions": ["core:default", "core:event:default", "core:window:default"]
 }
