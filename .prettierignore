@@ -5,6 +5,7 @@ src-tauri/target/
 fixtures/
 src-tauri/gen/
 src-tauri/icons/
+src/lib/ipc/generated/
 pnpm-lock.yaml
 Cargo.lock
 *.md

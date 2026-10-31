@@ -54,6 +54,7 @@ pub enum SettingsError {
 
 /// UI language preference.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Default)]
+#[cfg_attr(test, derive(ts_rs::TS))]
 #[serde(rename_all = "snake_case")]
 pub enum Language {
     #[default]
@@ -78,6 +79,7 @@ impl<'de> Deserialize<'de> for Language {
 
 /// Reduced-motion preference.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Default)]
+#[cfg_attr(test, derive(ts_rs::TS))]
 #[serde(rename_all = "snake_case")]
 pub enum ReducedMotion {
     #[default]
@@ -106,6 +108,7 @@ impl<'de> Deserialize<'de> for ReducedMotion {
 /// layer resolves them to the default bottom-right position and validates
 /// them against the available monitors (T1.3).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(ts_rs::TS))]
 #[serde(rename_all = "camelCase", default)]
 pub struct OverlaySettings {
     pub x: Option<i32>,
@@ -137,6 +140,7 @@ impl OverlaySettings {
 
 /// Persisted settings v1.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(ts_rs::TS))]
 #[serde(rename_all = "camelCase", default)]
 pub struct Settings {
     pub schema_version: u32,
@@ -382,6 +386,8 @@ pub struct LoadedSettings {
 
 /// Partial settings update. Unknown fields are rejected.
 #[derive(Debug, Clone, Default, PartialEq, Deserialize)]
+#[cfg_attr(test, derive(ts_rs::TS))]
+#[cfg_attr(test, ts(optional_fields))]
 #[serde(rename_all = "camelCase", default, deny_unknown_fields)]
 pub struct SettingsPatch {
     pub focus_min: Option<u32>,
@@ -405,6 +411,8 @@ pub struct SettingsPatch {
 
 /// Partial overlay update. Unknown fields are rejected.
 #[derive(Debug, Clone, Default, PartialEq, Deserialize)]
+#[cfg_attr(test, derive(ts_rs::TS))]
+#[cfg_attr(test, ts(optional_fields))]
 #[serde(rename_all = "camelCase", default, deny_unknown_fields)]
 pub struct OverlayPatch {
     pub x: Option<i32>,

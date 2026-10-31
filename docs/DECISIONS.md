@@ -32,10 +32,12 @@ Docs en español; código, identificadores, comentarios y commits en inglés. UI
 ## ADR-010 · Dependencias base de Rust y tooling de calidad
 `serde`/`serde_json` (MIT/Apache-2.0, serde-rs) para serializar estado, settings e IPC; `thiserror` (MIT/Apache-2.0, dtolnay) para errores tipados. En frontend, ESLint + typescript-eslint, Prettier y Vitest son tooling de desarrollo (MIT) y no se empaquetan en producción. **Revisar si**: se propone sustituir la serialización, el manejo de errores o el framework de pruebas.
 
+## ADR-011 · Generación de tipos TS con `ts-rs`
+Los tipos IPC se generan desde Rust con `ts-rs` 12 (MIT, Aleph-Alpha) como dev-dependency de `pomopet-core`, con derives activos solo en tests; no entra en el binario de producción. `pnpm gen:types` escribe `src/lib/ipc/generated/` y el resultado se commitea. Un test por defecto compara lo generado con lo commiteado, así `cargo test --workspace` (y por tanto CI) falla si hay drift sin tocar el workflow. Se prefiere a `tauri-specta` (aún 2.0.0-rc, con pins de `specta`) porque es estable, no acopla el núcleo a Tauri y permite generar solo los tipos del contrato. Los enteros grandes se emiten como `number` porque los `u64` del dominio son milisegundos o contadores dentro del rango seguro de JavaScript. **Revisar si**: `ts-rs` no puede expresar el contrato, o `tauri-specta` estabiliza y aporta bindings de comandos que compensen el acoplamiento.
+
 ## Pendientes de decidir (con responsable)
 | Tema | Opciones | Quién | Cuándo |
 |---|---|---|---|
-| Generación de tipos TS desde Rust | `ts-rs` vs `tauri-specta` | A1 | T0.5 |
 | Mecanismo de permisos por ventana para comandos propios | app manifest de `tauri-build` + capabilities | A1 | T1.3 |
 | Firma de código para canal directo | solo Store / certificado OV | Humano + A5 | T3.6 |
 | `identifier` definitivo de la app | texto | Humano | antes de M3 |

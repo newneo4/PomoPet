@@ -44,6 +44,7 @@ cargo test --workspace
 cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all -- --check
 pnpm lint && pnpm typecheck && pnpm test         # eslint, tsc --noEmit, vitest
+pnpm gen:types                                   # regenera src/lib/ipc/generated/
 ```
 Requisitos locales: Rust estable (toolchain MSVC), Node 20+ LTS, pnpm, Visual Studio Build Tools (carga C++), WebView2 Runtime.
 

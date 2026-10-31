@@ -62,6 +62,7 @@ impl Clock for ManualClock {
 
 /// Pomodoro phase.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(ts_rs::TS))]
 #[serde(rename_all = "snake_case")]
 pub enum Phase {
     Focus,
@@ -71,6 +72,7 @@ pub enum Phase {
 
 /// Timer status.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(ts_rs::TS))]
 #[serde(rename_all = "snake_case")]
 pub enum Status {
     Ready,
@@ -148,6 +150,7 @@ impl TimerState {
 
 /// Snapshot sent to the UI.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(ts_rs::TS))]
 #[serde(rename_all = "camelCase")]
 pub struct TimerSnapshot {
     pub phase: Phase,
@@ -162,6 +165,7 @@ pub struct TimerSnapshot {
 
 /// Emitted when a phase reaches zero.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(ts_rs::TS))]
 #[serde(rename_all = "camelCase")]
 pub struct Expiration {
     pub phase_ended: Phase,

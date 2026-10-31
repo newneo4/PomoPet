@@ -19,6 +19,9 @@ pub use timer::{
 pub const CRATE_NAME: &str = "pomopet-core";
 
 #[cfg(test)]
+mod typegen;
+
+#[cfg(test)]
 mod tests {
     use super::CRATE_NAME;
 

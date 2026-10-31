@@ -12,6 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
+    "gen:types": "cargo test -p pomopet-core --lib -- --ignored write_generated_types",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
