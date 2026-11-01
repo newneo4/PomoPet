@@ -113,6 +113,16 @@ pub fn settings_update(
     ensure_not_overlay(&window)?;
     let updated = state.update_settings(&patch)?;
     let _ = app.emit("settings://changed", &updated);
+
+    if let Some(autostart) = patch.autostart_with_windows {
+        use tauri_plugin_autostart::ManagerExt;
+        if autostart {
+            let _ = app.autolaunch().enable();
+        } else {
+            let _ = app.autolaunch().disable();
+        }
+    }
+
     Ok(updated)
 }
 

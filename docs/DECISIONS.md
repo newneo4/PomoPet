@@ -35,6 +35,14 @@ Docs en español; código, identificadores, comentarios y commits en inglés. UI
 ## ADR-011 · Generación de tipos TS con `ts-rs`
 Los tipos IPC se generan desde Rust con `ts-rs` 12 (MIT, Aleph-Alpha) como dev-dependency de `pomopet-core`, con derives activos solo en tests; no entra en el binario de producción. `pnpm gen:types` escribe `src/lib/ipc/generated/` y el resultado se commitea. Un test por defecto compara lo generado con lo commiteado, así `cargo test --workspace` (y por tanto CI) falla si hay drift sin tocar el workflow. Se prefiere a `tauri-specta` (aún 2.0.0-rc, con pins de `specta`) porque es estable, no acopla el núcleo a Tauri y permite generar solo los tipos del contrato. Los enteros grandes se emiten como `number` porque los `u64` del dominio son milisegundos o contadores dentro del rango seguro de JavaScript. **Revisar si**: `ts-rs` no puede expresar el contrato, o `tauri-specta` estabiliza y aporta bindings de comandos que compensen el acoplamiento.
 
+## ADR-012 · Plugins oficiales de Tauri para servicios del sistema
+Para cumplir T1.5 y T1.6 se adoptan los plugins oficiales mantenidos por el equipo de Tauri (licencia dual MIT/Apache-2.0):
+1. `tauri-plugin-single-instance` (v2): previene múltiples instancias de PomoPet. Al intentar abrir una segunda instancia, enfoca la ventana existente.
+2. `tauri-plugin-notification` (v2): gestiona notificaciones nativas del sistema operativo en Windows al expirar el temporizador (`timer://expired`), respetando `notifyOnExpire`.
+3. `tauri-plugin-autostart` (v2): permite habilitar y deshabilitar el arranque automático con Windows sin privilegios de administrador mediante la clave de registro del usuario (`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`).
+El soporte de bandeja del sistema (System Tray) se activa mediante la feature nativa `tray-icon` de `tauri` sin dependencias externas.
+**Revisar si**: alguna limitación técnica en Windows 10/11 requiere acceso directo a la Win32 API.
+
 ## Pendientes de decidir (con responsable)
 | Tema | Opciones | Quién | Cuándo |
 |---|---|---|---|

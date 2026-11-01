@@ -7,18 +7,31 @@
 pub mod commands;
 pub mod error;
 pub mod state;
+pub mod tray;
 
 use std::path::PathBuf;
 use std::time::Duration;
 
-use pomopet_core::{LoadedSettings, Settings, Status, SystemClock, Tick, Timer};
+use pomopet_core::{LoadedSettings, Phase, Settings, Status, SystemClock, Tick, Timer};
 use tauri::{Emitter, Manager};
+use tauri_plugin_notification::NotificationExt;
 
 use crate::state::{AppState, load_session};
 
 /// Builds and runs the Tauri application.
 pub fn run() -> tauri::Result<()> {
     tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            if let Some(overlay) = app.get_webview_window("overlay") {
+                let _ = overlay.show();
+                let _ = overlay.set_focus();
+            }
+        }))
+        .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            Some(vec!["--autostart"]),
+        ))
         .setup(|app| {
             let app_handle = app.handle();
             let app_data_dir = app_handle
@@ -51,10 +64,17 @@ pub fn run() -> tauri::Result<()> {
             let app_state = AppState::new(settings, timer, session_path, settings_path);
             app.manage(app_state);
 
+            // Setup system tray
+            let _ = tray::setup_tray(app_handle);
+
             // Handle initial expiration if restore immediately evaluated an expired session
             if let Some(expiration) = initial_tick.expiration {
                 let _ = app_handle.emit("timer://expired", &expiration);
             }
+
+            // Initial tray tooltip
+            let snap = initial_tick.snapshot;
+            tray::update_tray_tooltip(app_handle, snap.phase, snap.status, snap.remaining_ms);
 
             // Spawn background tick task (~1 Hz) for running timers
             let handle_clone = app_handle.clone();
@@ -74,8 +94,48 @@ pub fn run() -> tauri::Result<()> {
                     if let Some((tick, timer_state)) = tick_result {
                         let _ = state.persist_session(&timer_state);
                         let _ = handle_clone.emit("timer://snapshot", &tick.snapshot);
+
+                        // Update tray tooltip on each tick
+                        tray::update_tray_tooltip(
+                            &handle_clone,
+                            tick.snapshot.phase,
+                            tick.snapshot.status,
+                            tick.snapshot.remaining_ms,
+                        );
+
                         if let Some(expiration) = tick.expiration {
                             let _ = handle_clone.emit("timer://expired", &expiration);
+
+                            // Native OS notification if not late and notify_on_expire is enabled
+                            if expiration.late_ms <= 60_000 {
+                                let notify = state
+                                    .settings
+                                    .lock()
+                                    .map(|s| s.notify_on_expire)
+                                    .unwrap_or(true);
+                                if notify {
+                                    let (title, body) = match expiration.next_phase {
+                                        Phase::Focus => (
+                                            "¡Descanso terminado!",
+                                            "Hora de concentrarse de nuevo.",
+                                        ),
+                                        Phase::ShortBreak => (
+                                            "¡Foco completado!",
+                                            "Tómate un breve descanso de 5 minutos.",
+                                        ),
+                                        Phase::LongBreak => (
+                                            "¡Ciclo completado!",
+                                            "¡Gran trabajo! Disfruta tu descanso largo.",
+                                        ),
+                                    };
+                                    let _ = handle_clone
+                                        .notification()
+                                        .builder()
+                                        .title(title)
+                                        .body(body)
+                                        .show();
+                                }
+                            }
                         }
                     }
                 }
