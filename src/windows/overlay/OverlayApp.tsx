@@ -1,5 +1,5 @@
-import { useState, type MouseEvent, type KeyboardEvent } from "react";
-import { getCurrentWindow } from "@tauri-apps/api/window";
+import { useState, useEffect, type MouseEvent, type KeyboardEvent } from "react";
+import { getCurrentWindow, currentMonitor } from "@tauri-apps/api/window";
 import { ipcClient } from "../../lib/ipc/client";
 import { useTimer } from "../../lib/stores/useTimer";
 import { PetRenderer } from "../../lib/pet/PetRenderer";
@@ -22,6 +22,50 @@ export function OverlayApp() {
   } = useTimer();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [facingLeft, setFacingLeft] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    let unlisten: (() => void) | undefined;
+
+    const checkOrientation = async () => {
+      try {
+        const win = getCurrentWindow();
+        const pos = await win.outerPosition();
+        const monitor = await currentMonitor();
+        if (!monitor || !isMounted) return;
+
+        const monitorCenter = monitor.position.x + monitor.size.width / 2;
+        const windowCenter = pos.x + 130;
+        setFacingLeft(windowCenter > monitorCenter);
+      } catch {
+        // Non-tauri browser environment fallback
+      }
+    };
+
+    void checkOrientation();
+
+    try {
+      void getCurrentWindow()
+        .onMoved(() => {
+          void checkOrientation();
+        })
+        .then((unsub) => {
+          if (isMounted) {
+            unlisten = unsub;
+          } else {
+            unsub();
+          }
+        });
+    } catch {
+      // Non-tauri browser fallback
+    }
+
+    return () => {
+      isMounted = false;
+      unlisten?.();
+    };
+  }, []);
 
   const handleContextMenu = async (e: MouseEvent) => {
     e.preventDefault();
@@ -95,7 +139,9 @@ export function OverlayApp() {
         role="region"
         aria-label={`Temporizador Pomodoro: ${phaseLabel}, ${formattedTime}, ${snapshot.status}`}
       >
-        <div className="overlay__pet-wrapper">
+        <div
+          className={`overlay__pet-wrapper ${facingLeft ? "overlay__pet-wrapper--flipped" : ""}`}
+        >
           <PetRenderer
             petId={petId}
             manifest={manifest}

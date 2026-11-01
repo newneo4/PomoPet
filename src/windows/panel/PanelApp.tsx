@@ -1,4 +1,5 @@
-import { useState, type ChangeEvent } from "react";
+import { useState, useEffect, type ChangeEvent } from "react";
+import { listen } from "@tauri-apps/api/event";
 import { useSettings } from "../../lib/stores/useSettings";
 import { useI18n } from "../../lib/i18n";
 import { playChime } from "../../lib/sound";
@@ -33,6 +34,24 @@ export function PanelApp() {
     }
     return "timer";
   });
+
+  useEffect(() => {
+    let unlisten: (() => void) | undefined;
+    listen<string>("panel://switch-tab", (event) => {
+      const tab = event.payload as TabId;
+      if (tab && ["timer", "sound", "overlay", "pets", "general"].includes(tab)) {
+        setActiveTab(tab);
+      }
+    })
+      .then((fn) => {
+        unlisten = fn;
+      })
+      .catch(() => {});
+
+    return () => {
+      if (unlisten) unlisten();
+    };
+  }, []);
 
   const language = settings?.language ?? "system";
   const { t } = useI18n(language);

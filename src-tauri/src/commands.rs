@@ -123,10 +123,15 @@ pub fn settings_update(
         }
     }
 
-    if let Some(click_through) = patch.click_through
-        && let Some(overlay) = app.get_webview_window("overlay")
-    {
-        let _ = overlay.set_ignore_cursor_events(click_through);
+    if let Some(click_through) = patch.click_through {
+        if let Some(overlay) = app.get_webview_window("overlay") {
+            let _ = overlay.set_ignore_cursor_events(click_through);
+        }
+        if let Some(tray) = app.tray_by_id(crate::tray::TRAY_ID)
+            && let Ok(new_menu) = crate::tray::build_tray_menu(&app, click_through)
+        {
+            let _ = tray.set_menu(Some(new_menu));
+        }
     }
 
     Ok(updated)
@@ -152,6 +157,13 @@ pub fn overlay_set_click_through(
     };
     let updated = state.update_settings(&patch)?;
     let _ = app.emit("settings://changed", &updated);
+
+    if let Some(tray) = app.tray_by_id(crate::tray::TRAY_ID)
+        && let Ok(new_menu) = crate::tray::build_tray_menu(&app, enabled)
+    {
+        let _ = tray.set_menu(Some(new_menu));
+    }
+
     Ok(())
 }
 
@@ -194,9 +206,12 @@ pub fn overlay_show_context_menu(app: AppHandle) -> Result<(), AppError> {
 }
 
 #[tauri::command]
-pub fn overlay_open_panel(app: AppHandle, _tab: Option<String>) -> Result<(), AppError> {
+pub fn overlay_open_panel(app: AppHandle, tab: Option<String>) -> Result<(), AppError> {
     if let Some(panel) = app.get_webview_window("panel") {
+        let _ = panel.unminimize();
         let _ = panel.show();
+        let _ = panel.set_always_on_top(true);
+        let _ = panel.set_always_on_top(false);
         let _ = panel.set_focus();
     } else {
         #[cfg(dev)]
@@ -210,6 +225,9 @@ pub fn overlay_open_panel(app: AppHandle, _tab: Option<String>) -> Result<(), Ap
             .resizable(true)
             .build()
             .map_err(|e| AppError::internal("errors.panel_open_failed", e.to_string()))?;
+    }
+    if let Some(tab_name) = tab {
+        let _ = app.emit("panel://switch-tab", tab_name);
     }
     Ok(())
 }

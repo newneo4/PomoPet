@@ -38,12 +38,20 @@ body,
   justify-content: center;
   margin-bottom: -12px;
   z-index: 2;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease;
   pointer-events: none;
 }
 
 .overlay:hover .overlay__pet-wrapper {
   transform: translateY(-2px);
+}
+
+.overlay__pet-wrapper--flipped {
+  transform: scaleX(-1);
+}
+
+.overlay:hover .overlay__pet-wrapper--flipped {
+  transform: scaleX(-1) translateY(-2px);
 }
 
 .overlay:active {
