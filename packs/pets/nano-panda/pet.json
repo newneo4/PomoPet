@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "type": "pet",
+  "id": "nano-panda",
+  "name": "Nano Panda",
+  "version": "1.0.0",
+  "author": "Nano Banana & PomoPet",
+  "license": "CC-BY-4.0",
+  "description": "Un adorable oso panda ilustrado con Nano Banana que come bambú y descansa contigo.",
+  "frameSize": [128, 128],
+  "render": "smooth",
+  "states": {
+    "idle": {
+      "sheet": "sprites/idle.png",
+      "frames": 4,
+      "columns": 4,
+      "mode": "loop",
+      "fps": 4
+    },
+    "focus": {
+      "sheet": "sprites/focus.png",
+      "frames": 4,
+      "columns": 4,
+      "mode": "loop",
+      "fps": 2
+    },
+    "break": {
+      "sheet": "sprites/break.png",
+      "frames": 4,
+      "columns": 4,
+      "mode": "loop",
+      "fps": 4
+    },
+    "alert": {
+      "sheet": "sprites/alert.png",
+      "frames": 6,
+      "columns": 6,
+      "mode": "once",
+      "fps": 8
+    },
+    "paused": {
+      "sheet": "sprites/paused.png",
+      "frames": 1,
+      "columns": 1,
+      "mode": "loop",
+      "fps": 1
+    }
+  }
+}

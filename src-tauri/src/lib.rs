@@ -5,6 +5,7 @@
 //! logic belong to `pomopet-core`.
 
 pub mod commands;
+pub mod content;
 pub mod error;
 pub mod state;
 pub mod tray;
@@ -32,6 +33,14 @@ pub fn run() -> tauri::Result<()> {
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
             Some(vec!["--autostart"]),
         ))
+        .register_asynchronous_uri_scheme_protocol("pack", |ctx, request, responder| {
+            let app = ctx.app_handle().clone();
+            let uri = request.uri().to_string();
+            std::thread::spawn(move || {
+                let response = content::handle_pack_request(&app, &uri);
+                responder.respond(response);
+            });
+        })
         .setup(|app| {
             let app_handle = app.handle();
             let app_data_dir = app_handle
@@ -156,6 +165,9 @@ pub fn run() -> tauri::Result<()> {
             commands::overlay_reset_position,
             commands::overlay_open_panel,
             commands::app_quit,
+            content::content_list_installed,
+            content::content_get_pet_manifest,
+            content::content_activate,
         ])
         .run(tauri::generate_context!())
 }
