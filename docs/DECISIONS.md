@@ -43,10 +43,13 @@ Para cumplir T1.5 y T1.6 se adoptan los plugins oficiales mantenidos por el equi
 El soporte de bandeja del sistema (System Tray) se activa mediante la feature nativa `tray-icon` de `tauri` sin dependencias externas.
 **Revisar si**: alguna limitación técnica en Windows 10/11 requiere acceso directo a la Win32 API.
 
+## ADR-013 · Módulo ligero propio de internacionalización (i18n)
+Para cumplir T1.7 y T1.9 respetando la regla no negociable de cero dependencias sin justificación, se implementa una solución propia de i18n en TypeScript (`src/lib/i18n/`). Los textos residen exclusivamente en archivos JSON tipados (`es.json`, `en.json`) y se resuelven mediante un hook reactivo y funciones helper puras. Se apoya en la preferencia `language` de `Settings` (`system` | `es` | `en`), detectando `navigator.language` en caso de `system`. Sin dependencias externas, peso de bundle insignificante y compatibilidad total con StrictMode.
+**Revisar si**: se requiere soporte complejo de plurales interpolados en tiempo de ejecución.
+
 ## Pendientes de decidir (con responsable)
 | Tema | Opciones | Quién | Cuándo |
 |---|---|---|---|
 | Mecanismo de permisos por ventana para comandos propios | app manifest de `tauri-build` + capabilities | A1 | T1.3 |
 | Firma de código para canal directo | solo Store / certificado OV | Humano + A5 | T3.6 |
 | `identifier` definitivo de la app | texto | Humano | antes de M3 |
-| Librería de i18n | propia y ligera vs `react-i18next` | A4 | T1.9 |

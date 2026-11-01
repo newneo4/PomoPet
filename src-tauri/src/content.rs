@@ -186,7 +186,7 @@ pub fn content_list_installed(
     let mut packs = Vec::new();
 
     // Check built-in pets
-    for pet_id in &["gato-clasico", "nano-panda"] {
+    for pet_id in &["gato-clasico", "nano-panda", "mielcita"] {
         let manifest_path = format!("pets/{}/pet.json", pet_id);
         if let Some(file_path) = resolve_pack_asset(&app, &manifest_path)
             && let Ok(content) = fs::read_to_string(&file_path)

@@ -1,0 +1,83 @@
+{
+  "app": {
+    "title": "PomoPet Settings"
+  },
+  "nav": {
+    "timer": "Timer",
+    "sound": "Sound & Alerts",
+    "overlay": "Floating Overlay",
+    "pets": "Mascots",
+    "general": "General"
+  },
+  "timer": {
+    "title": "Timer Settings",
+    "focusMin": "Focus Duration (min)",
+    "focusMinHelp": "Duration of focused work sessions (1 to 180 min)",
+    "shortBreakMin": "Short Break (min)",
+    "shortBreakMinHelp": "Brief pause between focus sessions (1 to 60 min)",
+    "longBreakMin": "Long Break (min)",
+    "longBreakMinHelp": "Extended rest after completing a cycle (1 to 120 min)",
+    "cyclesUntilLong": "Cycles Until Long Break",
+    "cyclesUntilLongHelp": "Number of focus sessions before a long break (2 to 12)",
+    "autoStartBreaks": "Auto-start breaks",
+    "autoStartBreaksHelp": "Start break timer automatically when focus completes",
+    "autoStartFocus": "Auto-start next focus",
+    "autoStartFocusHelp": "Start next focus session automatically when break ends"
+  },
+  "sound": {
+    "title": "Sound & Alerts",
+    "soundEnabled": "Enable bell sound",
+    "soundEnabledHelp": "Plays a soft chime when each phase finishes",
+    "volume": "Bell volume",
+    "testSound": "Test bell",
+    "alertSeconds": "Visual alert duration (seconds)",
+    "alertSecondsHelp": "How long the mascot and clock stay in alert state (3 to 60 s)",
+    "notifyOnExpire": "Windows native notification",
+    "notifyOnExpireHelp": "Displays an OS notification in Windows Action Center on expiration"
+  },
+  "overlay": {
+    "title": "Floating Overlay",
+    "scale": "Window scale",
+    "scaleHelp": "Size of the clock and mascot (50% to 200%)",
+    "opacity": "Opacity",
+    "opacityHelp": "Transparency level of the overlay (30% to 100%)",
+    "clickThrough": "Click-Through mode",
+    "clickThroughHelp": "Mouse clicks pass through to windows beneath",
+    "clickThroughWarning": "Note: to regain direct mouse control, disable this from the system tray icon.",
+    "resetPosition": "Reset screen position",
+    "resetPositionHelp": "Moves the overlay to the bottom-right corner of the primary display"
+  },
+  "pets": {
+    "title": "Available Mascots",
+    "subtitle": "Choose the companion that keeps you company while working",
+    "active": "Active",
+    "activate": "Activate",
+    "author": "Author",
+    "version": "Version",
+    "bundled": "Bundled"
+  },
+  "general": {
+    "title": "General Preferences",
+    "autostart": "Launch on Windows startup",
+    "autostartHelp": "Run PomoPet automatically when logging into Windows",
+    "language": "Language",
+    "languageHelp": "Interface display language",
+    "languageSystem": "System default",
+    "languageEs": "Español",
+    "languageEn": "English",
+    "reducedMotion": "Reduced motion",
+    "reducedMotionHelp": "Controls mascot animations and visual transitions",
+    "reducedMotionSystem": "Follow Windows preference",
+    "reducedMotionOn": "Always reduce (static frames)",
+    "reducedMotionOff": "Full animation"
+  },
+  "status": {
+    "saved": "Settings saved",
+    "saving": "Saving...",
+    "error": "Error saving settings"
+  },
+  "actions": {
+    "close": "Close",
+    "resetDefaults": "Reset to defaults"
+  }
+}

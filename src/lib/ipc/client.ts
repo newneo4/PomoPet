@@ -5,6 +5,18 @@ import type { Settings } from "./generated/Settings";
 import type { SettingsPatch } from "./generated/SettingsPatch";
 import type { TimerSnapshot } from "./generated/TimerSnapshot";
 
+export interface InstalledPack {
+  kind: "pet" | "theme";
+  id: string;
+  name: string;
+  version: string;
+  author: string;
+  license: string;
+  bundled: boolean;
+  active: boolean;
+  previewUrl: string;
+}
+
 export interface IpcClient {
   getTimerState(): Promise<TimerSnapshot>;
   startTimer(): Promise<TimerSnapshot>;
@@ -18,11 +30,13 @@ export interface IpcClient {
   resetOverlayPosition(): Promise<void>;
   openPanel(tab?: string): Promise<void>;
   quitApp(): Promise<void>;
+  listInstalledPacks(): Promise<InstalledPack[]>;
   activatePet(id: string): Promise<Settings>;
   getPetSprite(petId: string, sheet: string): Promise<string>;
   onTimerSnapshot(cb: (snapshot: TimerSnapshot) => void): Promise<UnlistenFn>;
   onTimerExpired(cb: (expiration: Expiration) => void): Promise<UnlistenFn>;
   onSettingsChanged(cb: (settings: Settings) => void): Promise<UnlistenFn>;
+  onContentChanged(cb: () => void): Promise<UnlistenFn>;
 }
 
 const isTauriAvailable = (): boolean =>
@@ -93,6 +107,12 @@ export const ipcClient: IpcClient = {
     if (!isTauriAvailable()) return;
     return invoke<void>("app_quit");
   },
+  listInstalledPacks: async () => {
+    if (!isTauriAvailable()) {
+      return mockPacks;
+    }
+    return invoke<InstalledPack[]>("content_list_installed");
+  },
   activatePet: async (id: string) => {
     if (!isTauriAvailable()) {
       return { ...mockSettings, activePetId: id };
@@ -123,7 +143,49 @@ export const ipcClient: IpcClient = {
     }
     return listen<Settings>("settings://changed", (event) => cb(event.payload));
   },
+  onContentChanged: async (cb: () => void) => {
+    if (!isTauriAvailable()) {
+      return () => {};
+    }
+    return listen("content://changed", () => cb());
+  },
 };
+
+const mockPacks: InstalledPack[] = [
+  {
+    kind: "pet",
+    id: "gato-clasico",
+    name: "Gato Clásico",
+    version: "1.0.0",
+    author: "PomoPet",
+    license: "CC-BY-4.0",
+    bundled: true,
+    active: true,
+    previewUrl: "pack://localhost/pets/gato-clasico/preview.png",
+  },
+  {
+    kind: "pet",
+    id: "nano-panda",
+    name: "Nano Panda",
+    version: "1.0.0",
+    author: "PomoPet",
+    license: "CC-BY-4.0",
+    bundled: true,
+    active: false,
+    previewUrl: "pack://localhost/pets/nano-panda/preview.png",
+  },
+  {
+    kind: "pet",
+    id: "mielcita",
+    name: "Mielcita",
+    version: "1.0.0",
+    author: "Nano Banana & PomoPet",
+    license: "CC-BY-4.0",
+    bundled: true,
+    active: false,
+    previewUrl: "pack://localhost/pets/mielcita/preview.png",
+  },
+];
 
 const mockSnapshot: TimerSnapshot = {
   phase: "focus",

@@ -163,11 +163,18 @@ export function OverlayApp() {
             className="context-menu__item"
             onClick={() => {
               setMenuOpen(false);
-              const nextPet = petId === "gato-clasico" ? "nano-panda" : "gato-clasico";
+              const petList = ["gato-clasico", "nano-panda", "mielcita"];
+              const currentIdx = petList.indexOf(petId);
+              const nextPet = petList[(currentIdx + 1) % petList.length] || "gato-clasico";
               void activatePet(nextPet);
             }}
           >
-            Mascota: {petId === "gato-clasico" ? "Usar Nano Panda" : "Usar Gato Clásico"}
+            Mascota:{" "}
+            {petId === "gato-clasico"
+              ? "Usar Nano Panda"
+              : petId === "nano-panda"
+                ? "Usar Mielcita"
+                : "Usar Gato Clásico"}
           </button>
           <button
             type="button"

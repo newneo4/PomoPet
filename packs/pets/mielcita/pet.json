@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "type": "pet",
+  "id": "mielcita",
+  "name": "Mielcita",
+  "version": "1.0.0",
+  "author": "Nano Banana & PomoPet",
+  "license": "CC-BY-4.0",
+  "description": "Una tierna abejita animada que descansa mientras trabajas y celebra cuando completas tu sesión.",
+  "frameSize": [128, 128],
+  "render": "smooth",
+  "states": {
+    "idle": {
+      "sheet": "sprites/idle.png",
+      "frames": 25,
+      "columns": 25,
+      "mode": "loop",
+      "fps": 12
+    },
+    "focus": {
+      "sheet": "sprites/focus.png",
+      "frames": 25,
+      "columns": 25,
+      "mode": "loop",
+      "fps": 10
+    },
+    "break": {
+      "sheet": "sprites/break.png",
+      "frames": 25,
+      "columns": 25,
+      "mode": "loop",
+      "fps": 12
+    },
+    "alert": {
+      "sheet": "sprites/alert.png",
+      "frames": 25,
+      "columns": 25,
+      "mode": "once",
+      "fps": 15
+    },
+    "paused": {
+      "sheet": "sprites/paused.png",
+      "frames": 1,
+      "columns": 1,
+      "mode": "loop",
+      "fps": 1
+    }
+  }
+}

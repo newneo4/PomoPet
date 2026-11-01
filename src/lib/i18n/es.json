@@ -1,0 +1,83 @@
+{
+  "app": {
+    "title": "Ajustes de PomoPet"
+  },
+  "nav": {
+    "timer": "Temporizador",
+    "sound": "Sonido y Alertas",
+    "overlay": "Ventana Flotante",
+    "pets": "Mascotas",
+    "general": "General"
+  },
+  "timer": {
+    "title": "Configuración del Temporizador",
+    "focusMin": "Duración de Foco (min)",
+    "focusMinHelp": "Tiempo de trabajo concentrado (1 a 180 min)",
+    "shortBreakMin": "Descanso Corto (min)",
+    "shortBreakMinHelp": "Pausa breve entre sesiones (1 a 60 min)",
+    "longBreakMin": "Descanso Largo (min)",
+    "longBreakMinHelp": "Pausa prolongada tras completar varios ciclos (1 a 120 min)",
+    "cyclesUntilLong": "Ciclos para Descanso Largo",
+    "cyclesUntilLongHelp": "Número de sesiones de foco antes del descanso largo (2 a 12)",
+    "autoStartBreaks": "Auto-iniciar descansos",
+    "autoStartBreaksHelp": "Comenzar el descanso automáticamente al terminar el foco",
+    "autoStartFocus": "Auto-iniciar siguiente foco",
+    "autoStartFocusHelp": "Comenzar el siguiente bloque de foco automáticamente al terminar el descanso"
+  },
+  "sound": {
+    "title": "Sonido y Alertas",
+    "soundEnabled": "Activar campana sonora",
+    "soundEnabledHelp": "Toca una armonía suave al terminar cada fase",
+    "volume": "Volumen de la campana",
+    "testSound": "Probar campana",
+    "alertSeconds": "Duración de alerta visual (segundos)",
+    "alertSecondsHelp": "Tiempo que la mascota y el reloj permanecen en estado de alerta (3 a 60 s)",
+    "notifyOnExpire": "Notificación nativa de Windows",
+    "notifyOnExpireHelp": "Muestra una notificación en el centro de actividades del sistema al expirar"
+  },
+  "overlay": {
+    "title": "Ventana Flotante (Overlay)",
+    "scale": "Escala de la ventana",
+    "scaleHelp": "Tamaño del reloj y la mascota (50% a 200%)",
+    "opacity": "Opacidad",
+    "opacityHelp": "Nivel de transparencia del overlay (30% a 100%)",
+    "clickThrough": "Atravesar clics (Click-Through)",
+    "clickThroughHelp": "Los clics pasan a través de la ventana hacia las aplicaciones debajo",
+    "clickThroughWarning": "Nota: para recuperar el control directo, desactiva esta opción desde el icono de la bandeja del sistema (System Tray).",
+    "resetPosition": "Restablecer posición en pantalla",
+    "resetPositionHelp": "Mueve la ventana flotante a la esquina inferior derecha del monitor principal"
+  },
+  "pets": {
+    "title": "Mascotas Disponibles",
+    "subtitle": "Selecciona la mascota que te acompañará durante tus sesiones de trabajo",
+    "active": "Activa",
+    "activate": "Activar",
+    "author": "Autor",
+    "version": "Versión",
+    "bundled": "Incluida"
+  },
+  "general": {
+    "title": "Preferencias Generales",
+    "autostart": "Iniciar con Windows",
+    "autostartHelp": "Ejecutar PomoPet automáticamente al iniciar sesión en el equipo",
+    "language": "Idioma",
+    "languageHelp": "Idioma de los textos de la interfaz",
+    "languageSystem": "Predeterminado del sistema",
+    "languageEs": "Español",
+    "languageEn": "English",
+    "reducedMotion": "Movimiento reducido",
+    "reducedMotionHelp": "Controla las animaciones de la mascota y transiciones",
+    "reducedMotionSystem": "Seguir preferencia de Windows",
+    "reducedMotionOn": "Reducir siempre (cuadros estáticos)",
+    "reducedMotionOff": "Animación completa"
+  },
+  "status": {
+    "saved": "Cambios guardados",
+    "saving": "Guardando...",
+    "error": "Error al guardar cambios"
+  },
+  "actions": {
+    "close": "Cerrar",
+    "resetDefaults": "Valores por defecto"
+  }
+}
