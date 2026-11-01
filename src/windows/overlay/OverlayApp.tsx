@@ -1,5 +1,6 @@
 import { useState, type MouseEvent, type KeyboardEvent } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { ipcClient } from "../../lib/ipc/client";
 import { useTimer } from "../../lib/stores/useTimer";
 import { PetRenderer } from "../../lib/pet/PetRenderer";
 import { BUILTIN_PETS } from "../../lib/pet/builtin";
@@ -21,12 +22,14 @@ export function OverlayApp() {
   } = useTimer();
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
 
-  const handleContextMenu = (e: MouseEvent) => {
+  const handleContextMenu = async (e: MouseEvent) => {
     e.preventDefault();
-    setMenuPos({ x: e.clientX, y: e.clientY });
-    setMenuOpen(true);
+    try {
+      await ipcClient.showContextMenu();
+    } catch {
+      setMenuOpen(true);
+    }
   };
 
   const handleMouseDown = async (e: MouseEvent) => {
@@ -97,7 +100,7 @@ export function OverlayApp() {
             petId={petId}
             manifest={manifest}
             state={petState}
-            size={76}
+            size={108}
             reducedMotion={settings.reducedMotion === "on"}
           />
         </div>
@@ -107,6 +110,18 @@ export function OverlayApp() {
               ⠿
             </span>
             <span className="overlay__phase">{phaseLabel}</span>
+            <button
+              type="button"
+              className="overlay__gear-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                void openPanel();
+              }}
+              title="Abrir ajustes"
+              aria-label="Abrir ajustes"
+            >
+              ⚙
+            </button>
           </div>
           <span className="overlay__clock">{formattedTime}</span>
           <button
@@ -129,13 +144,19 @@ export function OverlayApp() {
       </main>
 
       {menuOpen && (
-        <div
-          className="context-menu"
-          style={{ top: menuPos.y, left: menuPos.x }}
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="context-menu" onClick={(e) => e.stopPropagation()}>
           <div className="context-menu__header">
-            {phaseLabel} ({snapshot.cyclesDone}/{snapshot.cyclesUntilLong})
+            <span>
+              {phaseLabel} ({snapshot.cyclesDone}/{snapshot.cyclesUntilLong})
+            </span>
+            <button
+              type="button"
+              className="context-menu__close-btn"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Cerrar menú"
+            >
+              ✕
+            </button>
           </div>
           <button
             type="button"

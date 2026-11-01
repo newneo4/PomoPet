@@ -28,6 +28,7 @@ export interface IpcClient {
   updateSettings(patch: SettingsPatch): Promise<Settings>;
   setClickThrough(enabled: boolean): Promise<void>;
   resetOverlayPosition(): Promise<void>;
+  showContextMenu(): Promise<void>;
   openPanel(tab?: string): Promise<void>;
   quitApp(): Promise<void>;
   listInstalledPacks(): Promise<InstalledPack[]>;
@@ -98,6 +99,10 @@ export const ipcClient: IpcClient = {
   resetOverlayPosition: async () => {
     if (!isTauriAvailable()) return;
     return invoke<void>("overlay_reset_position");
+  },
+  showContextMenu: async () => {
+    if (!isTauriAvailable()) return;
+    return invoke<void>("overlay_show_context_menu");
   },
   openPanel: async (tab?: string) => {
     if (!isTauriAvailable()) return;

@@ -160,6 +160,9 @@ pub fn run() -> tauri::Result<()> {
                 api.prevent_close();
             }
         })
+        .on_menu_event(|app, event| {
+            tray::handle_tray_menu_event(app, event.id().as_ref());
+        })
         .invoke_handler(tauri::generate_handler![
             commands::timer_get_state,
             commands::timer_start,
@@ -172,6 +175,7 @@ pub fn run() -> tauri::Result<()> {
             commands::overlay_set_click_through,
             commands::overlay_reset_position,
             commands::overlay_open_panel,
+            commands::overlay_show_context_menu,
             commands::app_quit,
             content::content_list_installed,
             content::content_get_pet_manifest,

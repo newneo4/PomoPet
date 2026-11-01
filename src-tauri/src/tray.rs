@@ -91,7 +91,41 @@ pub fn update_tray_tooltip(app: &AppHandle, phase: Phase, status: Status, remain
     }
 }
 
-fn handle_tray_menu_event(app: &AppHandle, id: &str) {
+pub fn show_overlay_context_menu(
+    app: &AppHandle,
+    window: &tauri::WebviewWindow,
+) -> Result<(), tauri::Error> {
+    use tauri::menu::ContextMenu;
+    let toggle_i = MenuItem::with_id(app, "toggle", "Iniciar / Pausar", true, None::<&str>)?;
+    let skip_i = MenuItem::with_id(app, "skip", "Saltar fase", true, None::<&str>)?;
+    let sep1 = PredefinedMenuItem::separator(app)?;
+    let panel_i = MenuItem::with_id(app, "panel", "Ajustes...", true, None::<&str>)?;
+    let click_through_i =
+        MenuItem::with_id(app, "click_through", "Click-through", true, None::<&str>)?;
+    let reset_pos_i =
+        MenuItem::with_id(app, "reset_pos", "Restablecer posición", true, None::<&str>)?;
+    let sep2 = PredefinedMenuItem::separator(app)?;
+    let quit_i = MenuItem::with_id(app, "quit", "Salir de PomoPet", true, None::<&str>)?;
+
+    let menu = Menu::with_items(
+        app,
+        &[
+            &toggle_i,
+            &skip_i,
+            &sep1,
+            &panel_i,
+            &click_through_i,
+            &reset_pos_i,
+            &sep2,
+            &quit_i,
+        ],
+    )?;
+
+    menu.popup(window.as_ref().window().clone())?;
+    Ok(())
+}
+
+pub fn handle_tray_menu_event(app: &AppHandle, id: &str) {
     match id {
         "toggle" => {
             let state = app.state::<AppState>();

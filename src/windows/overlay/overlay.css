@@ -36,7 +36,7 @@ body,
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: -8px;
+  margin-bottom: -12px;
   z-index: 2;
   transition: transform 0.2s ease;
   pointer-events: none;
@@ -114,6 +114,25 @@ body,
   user-select: none;
 }
 
+.overlay__gear-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition:
+    color 0.15s ease,
+    transform 0.2s ease;
+  outline: none;
+}
+
+.overlay__gear-btn:hover {
+  color: #ffffff;
+  transform: rotate(45deg);
+}
+
 .overlay__phase {
   font-size: 11px;
   font-weight: 600;
@@ -160,14 +179,20 @@ body,
 
 /* Context Menu */
 .context-menu {
-  position: fixed;
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 10px;
+  right: 10px;
   z-index: 1000;
-  min-width: 180px;
-  background: #18181b;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  max-height: 208px;
+  overflow-y: auto;
+  background: rgba(24, 24, 27, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
   padding: 6px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
   color: #f4f4f5;
   font-size: 13px;
   animation: menu-appear 0.1s ease-out;
@@ -185,12 +210,33 @@ body,
 }
 
 .context-menu__header {
-  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #a1a1aa;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 4px;
+}
+
+.context-menu__close-btn {
+  background: transparent;
+  border: none;
+  color: #a1a1aa;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.context-menu__close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
 }
 
 .context-menu__item {

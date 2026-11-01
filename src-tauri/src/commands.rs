@@ -146,7 +146,7 @@ pub fn overlay_reset_position(app: AppHandle, state: State<'_, AppState>) -> Res
         let screen_size = monitor.size();
         let window_size = overlay
             .outer_size()
-            .unwrap_or(tauri::PhysicalSize::new(240, 160));
+            .unwrap_or(tauri::PhysicalSize::new(260, 220));
         let x = screen_size.width as i32 - window_size.width as i32 - 20;
         let y = screen_size.height as i32 - window_size.height as i32 - 60;
         let _ = overlay.set_position(tauri::Position::Physical(tauri::PhysicalPosition::new(
@@ -169,21 +169,30 @@ pub fn overlay_reset_position(app: AppHandle, state: State<'_, AppState>) -> Res
 }
 
 #[tauri::command]
+pub fn overlay_show_context_menu(app: AppHandle) -> Result<(), AppError> {
+    if let Some(overlay) = app.get_webview_window("overlay") {
+        let _ = crate::tray::show_overlay_context_menu(&app, &overlay);
+    }
+    Ok(())
+}
+
+#[tauri::command]
 pub fn overlay_open_panel(app: AppHandle, _tab: Option<String>) -> Result<(), AppError> {
     if let Some(panel) = app.get_webview_window("panel") {
         let _ = panel.show();
         let _ = panel.set_focus();
     } else {
-        let _builder = tauri::WebviewWindowBuilder::new(
-            &app,
-            "panel",
-            tauri::WebviewUrl::App("panel.html".into()),
-        )
-        .title("PomoPet Settings")
-        .inner_size(480.0, 600.0)
-        .resizable(true)
-        .build()
-        .map_err(|e| AppError::internal("errors.panel_open_failed", e.to_string()))?;
+        #[cfg(dev)]
+        let url = tauri::WebviewUrl::External("http://localhost:1420/panel.html".parse().unwrap());
+        #[cfg(not(dev))]
+        let url = tauri::WebviewUrl::App("panel.html".into());
+
+        let _ = tauri::WebviewWindowBuilder::new(&app, "panel", url)
+            .title("PomoPet - Ajustes")
+            .inner_size(640.0, 620.0)
+            .resizable(true)
+            .build()
+            .map_err(|e| AppError::internal("errors.panel_open_failed", e.to_string()))?;
     }
     Ok(())
 }
