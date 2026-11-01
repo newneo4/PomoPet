@@ -161,6 +161,7 @@ pub struct Settings {
     pub active_theme_id: String,
     pub language: Language,
     pub reduced_motion: ReducedMotion,
+    pub companion_dialogue: bool,
 }
 
 impl Default for Settings {
@@ -184,6 +185,7 @@ impl Default for Settings {
             active_theme_id: DEFAULT_THEME_ID.to_string(),
             language: Language::System,
             reduced_motion: ReducedMotion::System,
+            companion_dialogue: true,
         }
     }
 }
@@ -272,6 +274,9 @@ impl Settings {
         }
         if let Some(value) = patch.reduced_motion {
             next.reduced_motion = value;
+        }
+        if let Some(value) = patch.companion_dialogue {
+            next.companion_dialogue = value;
         }
 
         next.normalized()
@@ -407,6 +412,7 @@ pub struct SettingsPatch {
     pub active_theme_id: Option<String>,
     pub language: Option<Language>,
     pub reduced_motion: Option<ReducedMotion>,
+    pub companion_dialogue: Option<bool>,
 }
 
 /// Partial overlay update. Unknown fields are rejected.
@@ -639,6 +645,7 @@ mod tests {
         assert_eq!(settings.active_theme_id, "clasico");
         assert_eq!(settings.language, Language::System);
         assert_eq!(settings.reduced_motion, ReducedMotion::System);
+        assert!(settings.companion_dialogue);
     }
 
     #[test]
@@ -783,6 +790,7 @@ mod tests {
         assert_eq!(json["overlay"]["monitorId"], serde_json::Value::Null);
         assert_eq!(json["language"], "system");
         assert_eq!(json["reducedMotion"], "system");
+        assert_eq!(json["companionDialogue"], true);
     }
 
     #[test]
@@ -900,6 +908,7 @@ mod tests {
         assert_eq!(settings.active_theme_id, DEFAULT_THEME_ID);
         assert_eq!(settings.language, Language::System);
         assert_eq!(settings.reduced_motion, ReducedMotion::System);
+        assert!(settings.companion_dialogue);
     }
 
     #[test]

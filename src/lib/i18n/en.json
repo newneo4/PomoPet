@@ -41,6 +41,8 @@
     "scaleHelp": "Size of the clock and mascot (50% to 200%)",
     "opacity": "Opacity",
     "opacityHelp": "Transparency level of the overlay (30% to 100%)",
+    "companionDialogue": "Mascot speech dialogues",
+    "companionDialogueHelp": "Displays motivational speech bubbles and wellness tips at key moments",
     "clickThrough": "Click-Through mode",
     "clickThroughHelp": "Mouse clicks pass through to windows beneath",
     "clickThroughWarning": "Note: to regain direct mouse control, disable this from the system tray icon.",
@@ -70,6 +72,64 @@
     "reducedMotionSystem": "Follow Windows preference",
     "reducedMotionOn": "Always reduce (static frames)",
     "reducedMotionOff": "Full animation"
+  },
+  "dialogues": {
+    "mielcita": {
+      "focusStart": [
+        "Time to harvest some goals! 🍯",
+        "Sweet focus mode activated! 🐝",
+        "You've got this, let's fly!",
+        "Zzzoom! Full focus."
+      ],
+      "breakStart": [
+        "Great job! Stretch your wings and drink water 💧",
+        "Time to rest your paws and recharge pollen 🌸",
+        "Such a productive session! Take a deep breath."
+      ],
+      "alert": ["Bzzzz! Time's up, you did it! 🎉", "Pomodoro complete! Awesome effort!"],
+      "poke": [
+        "Bzz! Right here cheering you on ❤️",
+        "Stay sweet and focused!",
+        "I'm here with you! Let's get it done!",
+        "Need a boost? You are doing great! 🐝"
+      ]
+    },
+    "gato-clasico": {
+      "focusStart": [
+        "Meow... sleeping while you work 🐾",
+        "Watching you with one eye... time to focus!",
+        "Productivity purr activated."
+      ],
+      "breakStart": [
+        "Meow! Time for a good cat stretch 🧘",
+        "Well-deserved break... go grab some water!",
+        "Great focus block. Rest those paws."
+      ],
+      "alert": ["Meow meow! Time is up! ⏰", "I'm awake! Session completed successfully!"],
+      "poke": [
+        "Purrr! Keeping you company 🐾",
+        "Meow! Keep focused, I got your back.",
+        "One quick pet and back to work ❤️"
+      ]
+    },
+    "nano-panda": {
+      "focusStart": [
+        "Zen mode activated! Mind clear like bamboo 🎋",
+        "Step by step, steady like a panda.",
+        "Take a deep breath and focus."
+      ],
+      "breakStart": [
+        "Bamboo break! Stretch your arms and hydrate 💧",
+        "Great session. A wise panda always rests.",
+        "Relax your shoulders and blink."
+      ],
+      "alert": ["Ding! Cycle completed with calm and success! 🎋", "Well done! Time to celebrate."],
+      "poke": [
+        "Panda hug! Keep moving forward ❤️",
+        "Calm and steady, you are doing wonderfully.",
+        "Right here with you every minute 🎋"
+      ]
+    }
   },
   "status": {
     "saved": "Settings saved",

@@ -6,4 +6,4 @@ import type { ReducedMotion } from "./ReducedMotion";
 /**
  * Persisted settings v1.
  */
-export type Settings = { schemaVersion: number, focusMin: number, shortBreakMin: number, longBreakMin: number, cyclesUntilLong: number, autoStartBreaks: boolean, autoStartFocus: boolean, alertSeconds: number, soundEnabled: boolean, volume: number, notifyOnExpire: boolean, autostartWithWindows: boolean, clickThrough: boolean, overlay: OverlaySettings, activePetId: string, activeThemeId: string, language: Language, reducedMotion: ReducedMotion, };
+export type Settings = { schemaVersion: number, focusMin: number, shortBreakMin: number, longBreakMin: number, cyclesUntilLong: number, autoStartBreaks: boolean, autoStartFocus: boolean, alertSeconds: number, soundEnabled: boolean, volume: number, notifyOnExpire: boolean, autostartWithWindows: boolean, clickThrough: boolean, overlay: OverlaySettings, activePetId: string, activeThemeId: string, language: Language, reducedMotion: ReducedMotion, companionDialogue: boolean, };

@@ -41,6 +41,8 @@
     "scaleHelp": "Tamaño del reloj y la mascota (50% a 200%)",
     "opacity": "Opacidad",
     "opacityHelp": "Nivel de transparencia del overlay (30% a 100%)",
+    "companionDialogue": "Diálogos de la mascota",
+    "companionDialogueHelp": "Muestra bocadillos motivacionales y sugerencias de bienestar en momentos clave",
     "clickThrough": "Atravesar clics (Click-Through)",
     "clickThroughHelp": "Los clics pasan a través de la ventana hacia las aplicaciones debajo",
     "clickThroughWarning": "Nota: para recuperar el control directo, desactiva esta opción desde el icono de la bandeja del sistema (System Tray).",
@@ -70,6 +72,70 @@
     "reducedMotionSystem": "Seguir preferencia de Windows",
     "reducedMotionOn": "Reducir siempre (cuadros estáticos)",
     "reducedMotionOff": "Animación completa"
+  },
+  "dialogues": {
+    "mielcita": {
+      "focusStart": [
+        "¡A recolectar logros! 🍯",
+        "¡Modo dulce concentración activado! 🐝",
+        "¡Tú puedes con esta tarea, a volar!",
+        "¡Zzzoom! Enfoque total."
+      ],
+      "breakStart": [
+        "¡Gran trabajo! Estira las alitas y toma agua 💧",
+        "Momento de descansar las patitas y recargar polen 🌸",
+        "¡Qué sesión tan productiva! Respira hondo."
+      ],
+      "alert": [
+        "¡Bzzzz! ¡Tiempo cumplido, lo lograste! 🎉",
+        "¡Alarma cumplida! ¡Excelente esfuerzo!"
+      ],
+      "poke": [
+        "¡Bzz! Aquí cuidando tu ritmo ❤️",
+        "¡Ponte dulce y sigue enfocado!",
+        "¡Aquí estoy contigo! ¡A por ello!",
+        "¿Necesitas un empujón? ¡Tú eres genial! 🐝"
+      ]
+    },
+    "gato-clasico": {
+      "focusStart": [
+        "Miau... me duermo mientras trabajas 🐾",
+        "Te vigilo de reojo... ¡a concentrarse!",
+        "Ronroneo de productividad activado."
+      ],
+      "breakStart": [
+        "¡Miau! Hora de estirarse como gato 🧘",
+        "Descanso merecido... ¡ve por un poco de agua!",
+        "Buen bloque de foco. A descansar las patitas."
+      ],
+      "alert": ["¡Miau miau! ¡Tiempo terminado! ⏰", "¡Desperté! ¡Sesión completada con éxito!"],
+      "poke": [
+        "¡Ronroneo! Aquí estoy acompañándote 🐾",
+        "¡Miau! Concéntrate, que yo te cuido.",
+        "Una caricia y seguimos produciendo ❤️"
+      ]
+    },
+    "nano-panda": {
+      "focusStart": [
+        "¡Modo zen activado! Mente clara como el bambú 🎋",
+        "Paso a paso, como panda constante.",
+        "Respira hondo y enfócate."
+      ],
+      "breakStart": [
+        "¡Pausa de bambú! Estira los brazos y bebe agua 💧",
+        "Gran sesión. Un panda sabio siempre descansa.",
+        "A relajar los hombros y parpadear."
+      ],
+      "alert": [
+        "¡Ding! ¡Ciclo completado con calma y éxito! 🎋",
+        "¡Bien hecho! Momento de celebrar."
+      ],
+      "poke": [
+        "¡Abrazo de panda! Sigamos adelante ❤️",
+        "Tranquilo y constante, vas muy bien.",
+        "Aquí contigo en cada minuto 🎋"
+      ]
+    }
   },
   "status": {
     "saved": "Cambios guardados",

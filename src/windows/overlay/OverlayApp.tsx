@@ -1,9 +1,12 @@
-import { useState, useEffect, type MouseEvent, type KeyboardEvent } from "react";
+import { useState, useEffect, useRef, type MouseEvent, type KeyboardEvent } from "react";
 import { getCurrentWindow, currentMonitor } from "@tauri-apps/api/window";
 import { ipcClient } from "../../lib/ipc/client";
 import { useTimer } from "../../lib/stores/useTimer";
 import { PetRenderer } from "../../lib/pet/PetRenderer";
 import { BUILTIN_PETS } from "../../lib/pet/builtin";
+import { resolveLanguage, getPetDialogue } from "../../lib/i18n";
+import { PetSpeechBubble } from "./PetSpeechBubble";
+import { PetHearts, type HeartParticle } from "./PetHearts";
 
 export function OverlayApp() {
   const {
@@ -23,6 +26,64 @@ export function OverlayApp() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [facingLeft, setFacingLeft] = useState(false);
+  const [bubbleText, setBubbleText] = useState<string | null>(null);
+  const [isBouncing, setIsBouncing] = useState(false);
+  const [particles, setParticles] = useState<HeartParticle[]>([]);
+
+  const currentLang = resolveLanguage(settings.language);
+  const petId = settings.activePetId || "mielcita";
+  const defaultManifest = BUILTIN_PETS["mielcita"] || BUILTIN_PETS["gato-clasico"]!;
+  const manifest = BUILTIN_PETS[petId] ?? defaultManifest;
+
+  const prevPhaseRef = useRef(snapshot.phase);
+  const prevStatusRef = useRef(snapshot.status);
+  const prevAlertRef = useRef(alertActive);
+
+  // Trigger contextual dialogue on timer phase transitions
+  useEffect(() => {
+    if (!settings.companionDialogue) {
+      prevPhaseRef.current = snapshot.phase;
+      prevStatusRef.current = snapshot.status;
+      prevAlertRef.current = alertActive;
+      return;
+    }
+
+    const prevPhase = prevPhaseRef.current;
+    const prevStatus = prevStatusRef.current;
+    const prevAlert = prevAlertRef.current;
+
+    // Transition to running focus
+    if (
+      snapshot.phase === "focus" &&
+      snapshot.status === "running" &&
+      (prevStatus !== "running" || prevPhase !== "focus")
+    ) {
+      setBubbleText(getPetDialogue(petId, "focusStart", currentLang));
+    }
+    // Transition to running break
+    else if (
+      (snapshot.phase === "short_break" || snapshot.phase === "long_break") &&
+      snapshot.status === "running" &&
+      (prevStatus !== "running" || prevPhase === "focus")
+    ) {
+      setBubbleText(getPetDialogue(petId, "breakStart", currentLang));
+    }
+    // Timer expired alert
+    else if (alertActive && !prevAlert) {
+      setBubbleText(getPetDialogue(petId, "alert", currentLang));
+    }
+
+    prevPhaseRef.current = snapshot.phase;
+    prevStatusRef.current = snapshot.status;
+    prevAlertRef.current = alertActive;
+  }, [
+    snapshot.phase,
+    snapshot.status,
+    alertActive,
+    settings.companionDialogue,
+    petId,
+    currentLang,
+  ]);
 
   useEffect(() => {
     let isMounted = true;
@@ -86,9 +147,9 @@ export function OverlayApp() {
     // Only primary (left) button initiates dragging
     if (e.button !== 0) return;
 
-    // Do NOT drag if clicking an interactive element (button or context menu)
+    // Do NOT drag if clicking an interactive element (button, context menu, pet, speech bubble)
     const target = e.target as HTMLElement | null;
-    if (target?.closest("button, .context-menu")) {
+    if (target?.closest("button, .context-menu, .speech-bubble, .overlay__pet-wrapper")) {
       return;
     }
 
@@ -97,6 +158,27 @@ export function OverlayApp() {
       await win.startDragging();
     } catch {
       // Fallback when outside Tauri (dev browser)
+    }
+  };
+
+  const handlePetPoke = (e: MouseEvent) => {
+    e.stopPropagation();
+    setIsBouncing(true);
+    setTimeout(() => setIsBouncing(false), 450);
+
+    const now = Date.now();
+    const icons = ["❤️", "🐝", "✨", "🍯", "💖", "⭐"];
+    const p1 = icons[Math.floor(Math.random() * icons.length)] || "❤️";
+    const p2 = icons[Math.floor(Math.random() * icons.length)] || "✨";
+    setParticles([
+      { id: now, x: -18, icon: p1 },
+      { id: now + 1, x: 0, icon: "❤️" },
+      { id: now + 2, x: 18, icon: p2 },
+    ]);
+    setTimeout(() => setParticles([]), 900);
+
+    if (settings.companionDialogue) {
+      setBubbleText(getPetDialogue(petId, "poke", currentLang));
     }
   };
 
@@ -118,9 +200,6 @@ export function OverlayApp() {
 
   const scale = settings.overlay.scale || 1.0;
   const opacity = settings.overlay.opacity || 1.0;
-  const petId = settings.activePetId || "gato-clasico";
-  const defaultManifest = BUILTIN_PETS["gato-clasico"]!;
-  const manifest = BUILTIN_PETS[petId] ?? defaultManifest;
 
   return (
     <div
@@ -139,9 +218,20 @@ export function OverlayApp() {
         role="region"
         aria-label={`Temporizador Pomodoro: ${phaseLabel}, ${formattedTime}, ${snapshot.status}`}
       >
+        <div className="speech-bubble-wrapper">
+          <PetSpeechBubble
+            text={bubbleText || ""}
+            onDismiss={() => setBubbleText(null)}
+            facingLeft={facingLeft}
+          />
+        </div>
+
         <div
-          className={`overlay__pet-wrapper ${facingLeft ? "overlay__pet-wrapper--flipped" : ""}`}
+          className={`overlay__pet-wrapper ${facingLeft ? "overlay__pet-wrapper--flipped" : ""} ${isBouncing ? "pet--bouncing" : ""}`}
+          onClick={handlePetPoke}
+          title="¡Acariciar mascota!"
         >
+          <PetHearts particles={particles} />
           <PetRenderer
             petId={petId}
             manifest={manifest}

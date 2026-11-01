@@ -6,4 +6,4 @@ import type { ReducedMotion } from "./ReducedMotion";
 /**
  * Partial settings update. Unknown fields are rejected.
  */
-export type SettingsPatch = { focusMin?: number, shortBreakMin?: number, longBreakMin?: number, cyclesUntilLong?: number, autoStartBreaks?: boolean, autoStartFocus?: boolean, alertSeconds?: number, soundEnabled?: boolean, volume?: number, notifyOnExpire?: boolean, autostartWithWindows?: boolean, clickThrough?: boolean, overlay?: OverlayPatch, activePetId?: string, activeThemeId?: string, language?: Language, reducedMotion?: ReducedMotion, };
+export type SettingsPatch = { focusMin?: number, shortBreakMin?: number, longBreakMin?: number, cyclesUntilLong?: number, autoStartBreaks?: boolean, autoStartFocus?: boolean, alertSeconds?: number, soundEnabled?: boolean, volume?: number, notifyOnExpire?: boolean, autostartWithWindows?: boolean, clickThrough?: boolean, overlay?: OverlayPatch, activePetId?: string, activeThemeId?: string, language?: Language, reducedMotion?: ReducedMotion, companionDialogue?: boolean, };

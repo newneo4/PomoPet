@@ -175,7 +175,7 @@ pub fn overlay_reset_position(app: AppHandle, state: State<'_, AppState>) -> Res
         let screen_size = monitor.size();
         let window_size = overlay
             .outer_size()
-            .unwrap_or(tauri::PhysicalSize::new(260, 220));
+            .unwrap_or(tauri::PhysicalSize::new(280, 250));
         let x = screen_size.width as i32 - window_size.width as i32 - 20;
         let y = screen_size.height as i32 - window_size.height as i32 - 60;
         let _ = overlay.set_position(tauri::Position::Physical(tauri::PhysicalPosition::new(

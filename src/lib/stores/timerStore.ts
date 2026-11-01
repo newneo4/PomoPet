@@ -56,6 +56,7 @@ const defaultSettings: Settings = {
   activeThemeId: "clasico",
   language: "system",
   reducedMotion: "system",
+  companionDialogue: true,
 };
 
 function computeDerived(

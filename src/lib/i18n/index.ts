@@ -64,6 +64,28 @@ function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
 }
 
 /**
+ * Retrieves a random themed dialogue line for a pet and event category.
+ */
+export function getPetDialogue(
+  petId: string,
+  category: "focusStart" | "breakStart" | "alert" | "poke",
+  lang: SupportedLanguage = "es",
+): string {
+  const dict = (dictionaries[lang] ?? esDict) as Record<string, unknown>;
+  const dialogues = (dict.dialogues || (esDict as Record<string, unknown>).dialogues) as
+    Record<string, Record<string, string[]>> | undefined;
+  const petDialogues = dialogues?.[petId] || dialogues?.["mielcita"] || dialogues?.["gato-clasico"];
+  const list = petDialogues?.[category];
+
+  if (Array.isArray(list) && list.length > 0) {
+    const idx = Math.floor(Math.random() * list.length);
+    return list[idx] || "❤️";
+  }
+
+  return "❤️";
+}
+
+/**
  * Lightweight React hook for translations.
  */
 export function useI18n(preference: Language = "system") {

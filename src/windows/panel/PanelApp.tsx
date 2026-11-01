@@ -534,6 +534,24 @@ export function PanelApp() {
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
+                    checked={settings.companionDialogue}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      void updateSettings({ companionDialogue: e.target.checked })
+                    }
+                    className="checkbox-input"
+                  />
+                  <span className="checkbox-custom" aria-hidden="true" />
+                  <div>
+                    <span className="checkbox-text">{t("overlay.companionDialogue")}</span>
+                    <p className="form-help">{t("overlay.companionDialogueHelp")}</p>
+                  </div>
+                </label>
+              </div>
+
+              <div className="form-group form-group--checkbox">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
                     checked={settings.clickThrough}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       void updateSettings({ clickThrough: e.target.checked })

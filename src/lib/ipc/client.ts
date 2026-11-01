@@ -228,4 +228,5 @@ const mockSettings: Settings = {
   activeThemeId: "clasico",
   language: "system",
   reducedMotion: "system",
+  companionDialogue: true,
 };
