@@ -89,15 +89,6 @@ export function PanelApp() {
     }
   };
 
-  const handleClose = async () => {
-    try {
-      const { getCurrentWindow } = await import("@tauri-apps/api/window");
-      await getCurrentWindow().hide();
-    } catch {
-      // Browser fallback
-    }
-  };
-
   if (loading || !settings) {
     return (
       <main className="panel panel--loading" role="main">
@@ -487,7 +478,9 @@ export function PanelApp() {
                           ? "━"
                           : themeItem.layout === "minimal"
                             ? "·"
-                            : "⏱";
+                            : themeItem.layout === "hueso"
+                              ? "🦴"
+                              : "⏱";
 
                     return (
                       <div

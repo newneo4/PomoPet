@@ -47,6 +47,8 @@
     "themeBarraDesc": "Barra horizontal estilizada con indicador de progreso continuo",
     "themeMinimalista": "Minimalista",
     "themeMinimalistaDesc": "Tipografía discreta con punto de estado y controles al pasar el cursor",
+    "themeHueso": "Huesito (Mielcita)",
+    "themeHuesoDesc": "Diseño lúdico en forma de hueso perruno con huellitas y acento caramelo",
     "scale": "Escala de la ventana",
     "scaleHelp": "Tamaño del reloj y la mascota (50% a 200%)",
     "opacity": "Opacidad",

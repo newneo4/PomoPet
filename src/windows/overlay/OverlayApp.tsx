@@ -9,7 +9,7 @@ import { getTheme } from "../../lib/themes/builtinThemes";
 import type { ClockLayoutProps } from "../../lib/themes/types";
 import { PetSpeechBubble } from "./PetSpeechBubble";
 import { PetHearts, type HeartParticle } from "./PetHearts";
-import { DigitalLayout, RingLayout, BarLayout, MinimalLayout } from "./layouts";
+import { DigitalLayout, RingLayout, BarLayout, MinimalLayout, BoneLayout } from "./layouts";
 
 export function OverlayApp() {
   const {
@@ -227,6 +227,8 @@ export function OverlayApp() {
         return <BarLayout {...clockProps} />;
       case "minimal":
         return <MinimalLayout {...clockProps} />;
+      case "hueso":
+        return <BoneLayout {...clockProps} />;
       case "digital":
       default:
         return <DigitalLayout {...clockProps} />;

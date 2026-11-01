@@ -1,7 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { BUILTIN_THEMES, DEFAULT_THEME_ID, getTheme } from "./builtinThemes";
-import { DigitalLayout, RingLayout, BarLayout, MinimalLayout } from "../../windows/overlay/layouts";
+import {
+  DigitalLayout,
+  RingLayout,
+  BarLayout,
+  MinimalLayout,
+  BoneLayout,
+} from "../../windows/overlay/layouts";
 import type { ClockLayoutProps } from "./types";
 
 describe("BUILTIN_THEMES", () => {
@@ -11,12 +17,14 @@ describe("BUILTIN_THEMES", () => {
     expect(layouts).toContain("ring");
     expect(layouts).toContain("bar");
     expect(layouts).toContain("minimal");
+    expect(layouts).toContain("hueso");
   });
 
   it("getTheme returns correct theme and falls back to default", () => {
     expect(getTheme("anillo").layout).toBe("ring");
     expect(getTheme("barra").layout).toBe("bar");
     expect(getTheme("minimalista").layout).toBe("minimal");
+    expect(getTheme("hueso").layout).toBe("hueso");
     expect(getTheme("clasico").layout).toBe("digital");
     expect(getTheme("non-existent-theme").id).toBe(DEFAULT_THEME_ID);
     expect(getTheme(null).id).toBe(DEFAULT_THEME_ID);
@@ -77,5 +85,13 @@ describe("Native Clock Layouts rendering", () => {
     expect(html).toContain("24:59");
     expect(html).toContain("layout-minimal");
     expect(html).toContain("layout-minimal__dot");
+  });
+
+  it("renders BoneLayout correctly with bone outline and paw", () => {
+    const html = renderToStaticMarkup(<BoneLayout {...commonProps} />);
+    expect(html).toContain("24:59");
+    expect(html).toContain("layout-bone");
+    expect(html).toContain("🐾");
+    expect(html).toContain("🦴");
   });
 });

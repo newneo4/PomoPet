@@ -16,7 +16,7 @@
         "url": "overlay.html",
         "title": "PomoPet",
         "width": 300,
-        "height": 320,
+        "height": 360,
         "transparent": true,
         "decorations": false,
         "alwaysOnTop": true,

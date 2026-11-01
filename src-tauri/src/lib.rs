@@ -76,7 +76,7 @@ pub fn run() -> tauri::Result<()> {
 
             if let Some(overlay) = app_handle.get_webview_window("overlay") {
                 let _ =
-                    overlay.set_size(tauri::Size::Logical(tauri::LogicalSize::new(300.0, 320.0)));
+                    overlay.set_size(tauri::Size::Logical(tauri::LogicalSize::new(300.0, 360.0)));
                 if is_click_through {
                     let _ = overlay.set_ignore_cursor_events(true);
                 }

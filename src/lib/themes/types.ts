@@ -1,7 +1,7 @@
 /**
  * Supported native clock layouts defined in docs/PACK_FORMAT.md (T2.6).
  */
-export type ThemeLayout = "digital" | "ring" | "bar" | "minimal";
+export type ThemeLayout = "digital" | "ring" | "bar" | "minimal" | "hueso";
 
 /**
  * Visual tokens for customizable themes.

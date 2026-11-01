@@ -47,6 +47,8 @@
     "themeBarraDesc": "Stylized horizontal bar with continuous progress line",
     "themeMinimalista": "Minimalist",
     "themeMinimalistaDesc": "Discreet typography with status indicator dot and hover controls",
+    "themeHueso": "Bone (Mielcita)",
+    "themeHuesoDesc": "Playful dog-bone shape with paw prints and caramel biscuit accent",
     "scale": "Window scale",
     "scaleHelp": "Size of the clock and mascot (50% to 200%)",
     "opacity": "Opacity",
