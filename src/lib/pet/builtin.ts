@@ -119,6 +119,7 @@ export const BUILTIN_PETS: Record<string, PetManifest> = {
         columns: 25,
         mode: "loop",
         fps: 12,
+        loopStart: 17,
       },
       focus: {
         sheet: "sprites/focus.png",
@@ -126,6 +127,7 @@ export const BUILTIN_PETS: Record<string, PetManifest> = {
         columns: 25,
         mode: "loop",
         fps: 10,
+        loopStart: 17,
       },
       break: {
         sheet: "sprites/break.png",
@@ -133,6 +135,7 @@ export const BUILTIN_PETS: Record<string, PetManifest> = {
         columns: 25,
         mode: "loop",
         fps: 12,
+        loopStart: 17,
       },
       alert: {
         sheet: "sprites/alert.png",

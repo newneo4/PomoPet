@@ -23,10 +23,19 @@
 
 @keyframes pet-play-loop {
   from {
-    background-position: 0px 0px;
+    background-position: var(--loop-start-pos, 0px) 0px;
   }
   to {
     background-position: var(--sheet-width) 0px;
+  }
+}
+
+@keyframes pet-play-intro {
+  from {
+    background-position: 0px 0px;
+  }
+  to {
+    background-position: var(--loop-start-pos, 0px) 0px;
   }
 }
 

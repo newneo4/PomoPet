@@ -70,16 +70,39 @@ export function computePetStyle(
   }
 
   const isStatic = options.reducedMotion || frames <= 1;
-  const animationStyle: CSSProperties = isStatic
-    ? {}
-    : ({
+  const loopStart =
+    stateConfig.loopStart !== undefined &&
+    stateConfig.loopStart > 0 &&
+    stateConfig.loopStart < frames
+      ? stateConfig.loopStart
+      : 0;
+
+  let animationStyle: CSSProperties = {};
+  if (!isStatic) {
+    if (stateConfig.mode === "loop" && loopStart > 0) {
+      const introFrames = loopStart;
+      const loopFrames = frames - loopStart;
+      const introSec = introFrames / fps;
+      const loopSec = loopFrames / fps;
+      const loopStartPos = -introFrames * frameW * scale;
+
+      animationStyle = {
+        animation: `pet-play-intro ${introSec}s steps(${introFrames}) forwards, pet-play-loop ${loopSec}s steps(${loopFrames}) ${introSec}s infinite`,
+        ["--loop-start-pos" as string]: `${loopStartPos}px`,
+        ["--sheet-width" as string]: `-${totalSheetWidth * scale}px`,
+      } as CSSProperties;
+    } else {
+      animationStyle = {
         animationName: stateConfig.mode === "once" ? "pet-play-once" : "pet-play-loop",
         animationDuration: `${durationSec}s`,
         animationTimingFunction: `steps(${frames})`,
         animationIterationCount: stateConfig.mode === "once" ? 1 : "infinite",
         animationFillMode: stateConfig.mode === "once" ? "forwards" : "none",
+        ["--loop-start-pos" as string]: "0px",
         ["--sheet-width" as string]: `-${totalSheetWidth * scale}px`,
-      } as CSSProperties);
+      } as CSSProperties;
+    }
+  }
 
   return {
     displayWidth,
@@ -122,6 +145,7 @@ export function PetRendererImpl({
       aria-label={`${manifest.name}: estado ${state}`}
     >
       <div
+        key={`${petId}-${state}`}
         className="pet-sprite"
         style={{
           width: computed.displayWidth,

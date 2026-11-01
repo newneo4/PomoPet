@@ -4,6 +4,7 @@ export interface PetStateConfig {
   columns?: number;
   mode: "loop" | "once" | "progress";
   fps?: number;
+  loopStart?: number;
 }
 
 export interface PetManifest {
