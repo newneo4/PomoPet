@@ -56,4 +56,22 @@ describe("PetRenderer", () => {
     });
     expect(style.sheetUrl).toBe("data:image/png;base64,abc");
   });
+
+  it("computes chained intro and loop animation when loopStart is specified", () => {
+    const mielcitaManifest = BUILTIN_PETS["mielcita"]!;
+    const style = computePetStyle("mielcita", mielcitaManifest, "idle");
+
+    // 25 frames, loopStart: 17, fps: 12
+    // intro: 17 frames at 12 fps = 1.4166...s
+    // loop: 8 frames at 12 fps = 0.6666...s
+    expect(style.animationStyle.animation).toBeDefined();
+    expect(String(style.animationStyle.animation)).toContain("pet-play-intro");
+    expect(String(style.animationStyle.animation)).toContain("steps(17)");
+    expect(String(style.animationStyle.animation)).toContain("pet-play-loop");
+    expect(String(style.animationStyle.animation)).toContain("steps(8)");
+    expect(String(style.animationStyle.animation)).toContain("infinite");
+    expect((style.animationStyle as Record<string, unknown>)["--loop-start-pos"]).toBe(
+      `-${17 * 128}px`,
+    );
+  });
 });
