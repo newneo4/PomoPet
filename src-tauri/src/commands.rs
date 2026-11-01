@@ -123,18 +123,35 @@ pub fn settings_update(
         }
     }
 
+    if let Some(click_through) = patch.click_through
+        && let Some(overlay) = app.get_webview_window("overlay")
+    {
+        let _ = overlay.set_ignore_cursor_events(click_through);
+    }
+
     Ok(updated)
 }
 
 // ==================== OVERLAY & APP COMMANDS ====================
 
 #[tauri::command]
-pub fn overlay_set_click_through(app: AppHandle, enabled: bool) -> Result<(), AppError> {
+pub fn overlay_set_click_through(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    enabled: bool,
+) -> Result<(), AppError> {
     if let Some(overlay) = app.get_webview_window("overlay") {
         overlay
             .set_ignore_cursor_events(enabled)
             .map_err(|e| AppError::internal("errors.click_through_failed", e.to_string()))?;
     }
+
+    let patch = SettingsPatch {
+        click_through: Some(enabled),
+        ..Default::default()
+    };
+    let updated = state.update_settings(&patch)?;
+    let _ = app.emit("settings://changed", &updated);
     Ok(())
 }
 

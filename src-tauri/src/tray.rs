@@ -2,7 +2,7 @@
 
 use tauri::{
     AppHandle, Emitter, Manager,
-    menu::{Menu, MenuItem, PredefinedMenuItem},
+    menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem},
     tray::{MouseButton, MouseButtonState, TrayIcon, TrayIconBuilder, TrayIconEvent},
 };
 
@@ -14,12 +14,25 @@ use crate::state::AppState;
 pub const TRAY_ID: &str = "pomopet-tray";
 
 pub fn setup_tray(app: &AppHandle) -> Result<TrayIcon, tauri::Error> {
+    let is_click_through = app
+        .state::<AppState>()
+        .settings
+        .lock()
+        .map(|s| s.click_through)
+        .unwrap_or(false);
+
     let toggle_i = MenuItem::with_id(app, "toggle", "Iniciar / Pausar", true, None::<&str>)?;
     let skip_i = MenuItem::with_id(app, "skip", "Saltar fase", true, None::<&str>)?;
     let sep1 = PredefinedMenuItem::separator(app)?;
     let panel_i = MenuItem::with_id(app, "panel", "Ajustes...", true, None::<&str>)?;
-    let click_through_i =
-        MenuItem::with_id(app, "click_through", "Click-through", true, None::<&str>)?;
+    let click_through_i = CheckMenuItem::with_id(
+        app,
+        "click_through",
+        "Click-through (atravesar clics)",
+        true,
+        is_click_through,
+        None::<&str>,
+    )?;
     let reset_pos_i =
         MenuItem::with_id(app, "reset_pos", "Restablecer posición", true, None::<&str>)?;
     let sep2 = PredefinedMenuItem::separator(app)?;
@@ -96,12 +109,25 @@ pub fn show_overlay_context_menu(
     window: &tauri::WebviewWindow,
 ) -> Result<(), tauri::Error> {
     use tauri::menu::ContextMenu;
+    let is_click_through = app
+        .state::<AppState>()
+        .settings
+        .lock()
+        .map(|s| s.click_through)
+        .unwrap_or(false);
+
     let toggle_i = MenuItem::with_id(app, "toggle", "Iniciar / Pausar", true, None::<&str>)?;
     let skip_i = MenuItem::with_id(app, "skip", "Saltar fase", true, None::<&str>)?;
     let sep1 = PredefinedMenuItem::separator(app)?;
     let panel_i = MenuItem::with_id(app, "panel", "Ajustes...", true, None::<&str>)?;
-    let click_through_i =
-        MenuItem::with_id(app, "click_through", "Click-through", true, None::<&str>)?;
+    let click_through_i = CheckMenuItem::with_id(
+        app,
+        "click_through",
+        "Click-through (atravesar clics)",
+        true,
+        is_click_through,
+        None::<&str>,
+    )?;
     let reset_pos_i =
         MenuItem::with_id(app, "reset_pos", "Restablecer posición", true, None::<&str>)?;
     let sep2 = PredefinedMenuItem::separator(app)?;
@@ -151,7 +177,23 @@ pub fn handle_tray_menu_event(app: &AppHandle, id: &str) {
             let _ = commands::overlay_open_panel(app.clone(), None);
         }
         "click_through" => {
-            let _ = commands::overlay_set_click_through(app.clone(), true);
+            let state = app.state::<AppState>();
+            let current = state
+                .settings
+                .lock()
+                .map(|s| s.click_through)
+                .unwrap_or(false);
+            let next = !current;
+            if let Some(overlay) = app.get_webview_window("overlay") {
+                let _ = overlay.set_ignore_cursor_events(next);
+            }
+            let patch = pomopet_core::SettingsPatch {
+                click_through: Some(next),
+                ..Default::default()
+            };
+            if let Ok(updated) = state.update_settings(&patch) {
+                let _ = app.emit("settings://changed", &updated);
+            }
         }
         "reset_pos" => {
             let state = app.state::<AppState>();

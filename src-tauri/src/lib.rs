@@ -70,8 +70,13 @@ pub fn run() -> tauri::Result<()> {
                 (t, tick)
             };
 
+            let is_click_through = settings.click_through;
             let app_state = AppState::new(settings, timer, session_path, settings_path);
             app.manage(app_state);
+
+            if is_click_through && let Some(overlay) = app_handle.get_webview_window("overlay") {
+                let _ = overlay.set_ignore_cursor_events(true);
+            }
 
             // Setup system tray
             let _ = tray::setup_tray(app_handle);
