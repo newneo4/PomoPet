@@ -74,8 +74,12 @@ pub fn run() -> tauri::Result<()> {
             let app_state = AppState::new(settings, timer, session_path, settings_path);
             app.manage(app_state);
 
-            if is_click_through && let Some(overlay) = app_handle.get_webview_window("overlay") {
-                let _ = overlay.set_ignore_cursor_events(true);
+            if let Some(overlay) = app_handle.get_webview_window("overlay") {
+                let _ =
+                    overlay.set_size(tauri::Size::Logical(tauri::LogicalSize::new(300.0, 320.0)));
+                if is_click_through {
+                    let _ = overlay.set_ignore_cursor_events(true);
+                }
             }
 
             // Setup system tray

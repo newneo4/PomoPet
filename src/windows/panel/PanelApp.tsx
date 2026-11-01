@@ -4,6 +4,7 @@ import { useSettings } from "../../lib/stores/useSettings";
 import { useI18n } from "../../lib/i18n";
 import { playChime } from "../../lib/sound";
 import { validateNumberField, SETTINGS_LIMITS } from "../../lib/stores/settingsValidators";
+import { BUILTIN_THEMES } from "../../lib/themes/builtinThemes";
 import { PetCard } from "./PetCard";
 import type { Language } from "../../lib/ipc/generated/Language";
 import type { ReducedMotion } from "../../lib/ipc/generated/ReducedMotion";
@@ -133,15 +134,6 @@ export function PanelApp() {
               ⚠️ {errorMessage || t("status.error")}
             </span>
           )}
-          <button
-            type="button"
-            className="btn btn--icon"
-            onClick={handleClose}
-            aria-label={t("actions.close")}
-            title={t("actions.close")}
-          >
-            ✕
-          </button>
         </div>
       </header>
 
@@ -479,6 +471,71 @@ export function PanelApp() {
               className="tab-panel"
             >
               <h2 className="tab-panel__title">{t("overlay.title")}</h2>
+
+              <div className="form-group">
+                <label className="form-label">{t("overlay.clockStyle")}</label>
+                <p className="form-help">{t("overlay.clockStyleHelp")}</p>
+                <div className="theme-grid">
+                  {Object.values(BUILTIN_THEMES).map((themeItem) => {
+                    const isSelected = (settings.activeThemeId || "clasico") === themeItem.id;
+                    const titleKey = `overlay.theme${themeItem.id.charAt(0).toUpperCase() + themeItem.id.slice(1)}`;
+                    const descKey = `overlay.theme${themeItem.id.charAt(0).toUpperCase() + themeItem.id.slice(1)}Desc`;
+                    const icon =
+                      themeItem.layout === "ring"
+                        ? "⭕"
+                        : themeItem.layout === "bar"
+                          ? "━"
+                          : themeItem.layout === "minimal"
+                            ? "·"
+                            : "⏱";
+
+                    return (
+                      <div
+                        key={themeItem.id}
+                        className={`theme-card ${isSelected ? "theme-card--selected" : ""}`}
+                        onClick={() => void updateSettings({ activeThemeId: themeItem.id })}
+                        role="radio"
+                        aria-checked={isSelected}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === " " || e.key === "Enter") {
+                            e.preventDefault();
+                            void updateSettings({ activeThemeId: themeItem.id });
+                          }
+                        }}
+                      >
+                        <div className="theme-card__header">
+                          <span className="theme-card__icon">{icon}</span>
+                          <span className="theme-card__title">{t(titleKey) || themeItem.name}</span>
+                          {isSelected && (
+                            <span className="theme-card__badge">{t("pets.active")}</span>
+                          )}
+                        </div>
+                        <p className="theme-card__desc">{t(descKey) || themeItem.description}</p>
+                        <div className="theme-card__palette" aria-hidden="true">
+                          <span
+                            className="theme-card__swatch"
+                            style={{ backgroundColor: themeItem.tokens.accent }}
+                            title="Acento Foco"
+                          />
+                          <span
+                            className="theme-card__swatch"
+                            style={{ backgroundColor: themeItem.tokens.accentBreak }}
+                            title="Acento Descanso"
+                          />
+                          <span
+                            className="theme-card__swatch"
+                            style={{ backgroundColor: themeItem.tokens.background }}
+                            title="Fondo"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="form-divider" />
 
               <div className="form-group">
                 <div className="slider-header">

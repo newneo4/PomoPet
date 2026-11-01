@@ -5,13 +5,17 @@ import { useTimer } from "../../lib/stores/useTimer";
 import { PetRenderer } from "../../lib/pet/PetRenderer";
 import { BUILTIN_PETS } from "../../lib/pet/builtin";
 import { resolveLanguage, getPetDialogue } from "../../lib/i18n";
+import { getTheme } from "../../lib/themes/builtinThemes";
+import type { ClockLayoutProps } from "../../lib/themes/types";
 import { PetSpeechBubble } from "./PetSpeechBubble";
 import { PetHearts, type HeartParticle } from "./PetHearts";
+import { DigitalLayout, RingLayout, BarLayout, MinimalLayout } from "./layouts";
 
 export function OverlayApp() {
   const {
     snapshot,
     settings,
+    remainingMs,
     formattedTime,
     petState,
     alertActive,
@@ -93,11 +97,12 @@ export function OverlayApp() {
       try {
         const win = getCurrentWindow();
         const pos = await win.outerPosition();
+        const size = await win.outerSize();
         const monitor = await currentMonitor();
         if (!monitor || !isMounted) return;
 
         const monitorCenter = monitor.position.x + monitor.size.width / 2;
-        const windowCenter = pos.x + 130;
+        const windowCenter = pos.x + size.width / 2;
         setFacingLeft(windowCenter > monitorCenter);
       } catch {
         // Non-tauri browser environment fallback
@@ -168,14 +173,13 @@ export function OverlayApp() {
 
     const now = Date.now();
     const icons = ["❤️", "🐝", "✨", "🍯", "💖", "⭐"];
-    const p1 = icons[Math.floor(Math.random() * icons.length)] || "❤️";
-    const p2 = icons[Math.floor(Math.random() * icons.length)] || "✨";
+    const getRandomIcon = () => icons[Math.floor(Math.random() * icons.length)] || "❤️";
     setParticles([
-      { id: now, x: -18, icon: p1 },
-      { id: now + 1, x: 0, icon: "❤️" },
-      { id: now + 2, x: 18, icon: p2 },
+      { id: now, x: -22, driftX: -18, icon: getRandomIcon() },
+      { id: now + 1, x: 0, driftX: 0, icon: getRandomIcon() },
+      { id: now + 2, x: 22, driftX: 18, icon: getRandomIcon() },
     ]);
-    setTimeout(() => setParticles([]), 900);
+    setTimeout(() => setParticles([]), 950);
 
     if (settings.companionDialogue) {
       setBubbleText(getPetDialogue(petId, "poke", currentLang));
@@ -200,14 +204,49 @@ export function OverlayApp() {
 
   const scale = settings.overlay.scale || 1.0;
   const opacity = settings.overlay.opacity || 1.0;
+  const theme = getTheme(settings.activeThemeId);
+
+  const clockProps: ClockLayoutProps = {
+    formattedTime,
+    phaseLabel,
+    phase: snapshot.phase,
+    status: snapshot.status,
+    remainingMs,
+    totalMs: snapshot.totalMs,
+    alertActive,
+    onToggleRunning: () => void toggleRunning(),
+    onOpenPanel: () => void openPanel(),
+    onSkip: () => void skip(),
+  };
+
+  const renderClockLayout = () => {
+    switch (theme.layout) {
+      case "ring":
+        return <RingLayout {...clockProps} />;
+      case "bar":
+        return <BarLayout {...clockProps} />;
+      case "minimal":
+        return <MinimalLayout {...clockProps} />;
+      case "digital":
+      default:
+        return <DigitalLayout {...clockProps} />;
+    }
+  };
 
   return (
     <div
       className="overlay-container"
-      style={{
-        transform: `scale(${scale})`,
-        opacity,
-      }}
+      style={
+        {
+          transform: `scale(${scale})`,
+          opacity,
+          "--theme-text": theme.tokens.text,
+          "--theme-accent": theme.tokens.accent,
+          "--theme-accent-break": theme.tokens.accentBreak,
+          "--theme-bg": theme.tokens.background,
+          "--theme-radius": `${theme.tokens.radius}px`,
+        } as React.CSSProperties
+      }
       onContextMenu={handleContextMenu}
     >
       <main
@@ -218,65 +257,33 @@ export function OverlayApp() {
         role="region"
         aria-label={`Temporizador Pomodoro: ${phaseLabel}, ${formattedTime}, ${snapshot.status}`}
       >
-        <div className="speech-bubble-wrapper">
-          <PetSpeechBubble
-            text={bubbleText || ""}
-            onDismiss={() => setBubbleText(null)}
-            facingLeft={facingLeft}
-          />
+        <div className="overlay__pet-area">
+          <div className="speech-bubble-wrapper">
+            <PetSpeechBubble
+              text={bubbleText || ""}
+              onDismiss={() => setBubbleText(null)}
+              facingLeft={facingLeft}
+            />
+          </div>
+
+          <PetHearts particles={particles} />
+
+          <div
+            className={`overlay__pet-wrapper ${facingLeft ? "overlay__pet-wrapper--flipped" : ""} ${isBouncing ? "pet--bouncing" : ""}`}
+            onClick={handlePetPoke}
+            title="¡Acariciar mascota!"
+          >
+            <PetRenderer
+              petId={petId}
+              manifest={manifest}
+              state={petState}
+              size={108}
+              reducedMotion={settings.reducedMotion === "on"}
+            />
+          </div>
         </div>
 
-        <div
-          className={`overlay__pet-wrapper ${facingLeft ? "overlay__pet-wrapper--flipped" : ""} ${isBouncing ? "pet--bouncing" : ""}`}
-          onClick={handlePetPoke}
-          title="¡Acariciar mascota!"
-        >
-          <PetHearts particles={particles} />
-          <PetRenderer
-            petId={petId}
-            manifest={manifest}
-            state={petState}
-            size={108}
-            reducedMotion={settings.reducedMotion === "on"}
-          />
-        </div>
-        <div className="overlay__pill">
-          <div className="overlay__header">
-            <span className="overlay__drag-grip" title="Arrastrar ventana">
-              ⠿
-            </span>
-            <span className="overlay__phase">{phaseLabel}</span>
-            <button
-              type="button"
-              className="overlay__gear-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                void openPanel();
-              }}
-              title="Abrir ajustes"
-              aria-label="Abrir ajustes"
-            >
-              ⚙
-            </button>
-          </div>
-          <span className="overlay__clock">{formattedTime}</span>
-          <button
-            type="button"
-            className="overlay__action-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              void toggleRunning();
-            }}
-          >
-            {alertActive
-              ? "⏰ ¡Detener!"
-              : snapshot.status === "running"
-                ? "⏸ Pausar"
-                : snapshot.status === "paused"
-                  ? "▶ Reanudar"
-                  : "▶ Iniciar"}
-          </button>
-        </div>
+        {renderClockLayout()}
       </main>
 
       {menuOpen && (
