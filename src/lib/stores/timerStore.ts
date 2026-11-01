@@ -8,6 +8,7 @@ import {
   formatTime,
   type PetState,
 } from "../pet/petState";
+import { playChime } from "../sound";
 
 export interface TimerStoreState {
   snapshot: TimerSnapshot;
@@ -143,6 +144,10 @@ class TimerStore {
       }
 
       this.update((prev) => computeDerived(prev.snapshot, prev.settings, prev.skew, true));
+
+      if (this.state.settings.soundEnabled) {
+        playChime(this.state.settings.volume);
+      }
 
       const durationMs = (this.state.settings.alertSeconds || 8) * 1000;
       this.alertTimeout = window.setTimeout(() => {
