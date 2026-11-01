@@ -7,6 +7,7 @@ export function useTimer(): TimerStoreState & {
   openPanel: (tab?: string) => Promise<void>;
   setClickThrough: (enabled: boolean) => Promise<void>;
   resetPosition: () => Promise<void>;
+  activatePet: (id: string) => Promise<void>;
   quit: () => Promise<void>;
   dismissAlert: () => void;
 } {
@@ -19,6 +20,7 @@ export function useTimer(): TimerStoreState & {
     openPanel: (tab?: string) => timerStore.openPanel(tab),
     setClickThrough: (enabled: boolean) => timerStore.setClickThrough(enabled),
     resetPosition: () => timerStore.resetPosition(),
+    activatePet: (id: string) => timerStore.activatePet(id),
     quit: () => timerStore.quit(),
     dismissAlert: () => timerStore.dismissAlert(),
   };

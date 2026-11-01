@@ -1,0 +1,47 @@
+.pet-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+}
+
+.pet-sprite {
+  background-repeat: no-repeat;
+  will-change: background-position;
+}
+
+.pet-sprite--pixelated .pet-sprite {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.pet-sprite--smooth .pet-sprite {
+  image-rendering: auto;
+}
+
+@keyframes pet-play-loop {
+  from {
+    background-position: 0px 0px;
+  }
+  to {
+    background-position: var(--sheet-width) 0px;
+  }
+}
+
+@keyframes pet-play-once {
+  from {
+    background-position: 0px 0px;
+  }
+  to {
+    background-position: var(--sheet-width) 0px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pet-sprite {
+    animation: none !important;
+    background-position: 0px 0px !important;
+  }
+}

@@ -1,0 +1,103 @@
+import type { PetManifest } from "./types";
+
+export const BUILTIN_PETS: Record<string, PetManifest> = {
+  "gato-clasico": {
+    schema: 1,
+    type: "pet",
+    id: "gato-clasico",
+    name: "Gato Clásico",
+    version: "1.0.0",
+    author: "PomoPet & Nano Banana",
+    license: "CC-BY-4.0",
+    description:
+      "El gato original de PomoPet. Duerme mientras trabajas y despierta al sonar la alarma.",
+    frameSize: [128, 128],
+    render: "smooth",
+    states: {
+      idle: {
+        sheet: "sprites/idle.png",
+        frames: 4,
+        columns: 4,
+        mode: "loop",
+        fps: 4,
+      },
+      focus: {
+        sheet: "sprites/focus.png",
+        frames: 4,
+        columns: 4,
+        mode: "loop",
+        fps: 2,
+      },
+      break: {
+        sheet: "sprites/break.png",
+        frames: 4,
+        columns: 4,
+        mode: "loop",
+        fps: 4,
+      },
+      alert: {
+        sheet: "sprites/alert.png",
+        frames: 6,
+        columns: 6,
+        mode: "once",
+        fps: 8,
+      },
+      paused: {
+        sheet: "sprites/paused.png",
+        frames: 1,
+        columns: 1,
+        mode: "loop",
+        fps: 1,
+      },
+    },
+  },
+  "nano-panda": {
+    schema: 1,
+    type: "pet",
+    id: "nano-panda",
+    name: "Nano Panda",
+    version: "1.0.0",
+    author: "PomoPet & Nano Banana",
+    license: "CC-BY-4.0",
+    description: "Un tierno panda chibi que te acompaña en tus sesiones de foco.",
+    frameSize: [128, 128],
+    render: "smooth",
+    states: {
+      idle: {
+        sheet: "sprites/idle.png",
+        frames: 4,
+        columns: 4,
+        mode: "loop",
+        fps: 4,
+      },
+      focus: {
+        sheet: "sprites/focus.png",
+        frames: 4,
+        columns: 4,
+        mode: "loop",
+        fps: 2,
+      },
+      break: {
+        sheet: "sprites/break.png",
+        frames: 4,
+        columns: 4,
+        mode: "loop",
+        fps: 4,
+      },
+      alert: {
+        sheet: "sprites/alert.png",
+        frames: 6,
+        columns: 6,
+        mode: "once",
+        fps: 8,
+      },
+      paused: {
+        sheet: "sprites/paused.png",
+        frames: 1,
+        columns: 1,
+        mode: "loop",
+        fps: 1,
+      },
+    },
+  },
+};

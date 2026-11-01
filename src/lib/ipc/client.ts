@@ -18,6 +18,7 @@ export interface IpcClient {
   resetOverlayPosition(): Promise<void>;
   openPanel(tab?: string): Promise<void>;
   quitApp(): Promise<void>;
+  activatePet(id: string): Promise<Settings>;
   onTimerSnapshot(cb: (snapshot: TimerSnapshot) => void): Promise<UnlistenFn>;
   onTimerExpired(cb: (expiration: Expiration) => void): Promise<UnlistenFn>;
   onSettingsChanged(cb: (settings: Settings) => void): Promise<UnlistenFn>;
@@ -90,6 +91,12 @@ export const ipcClient: IpcClient = {
   quitApp: async () => {
     if (!isTauriAvailable()) return;
     return invoke<void>("app_quit");
+  },
+  activatePet: async (id: string) => {
+    if (!isTauriAvailable()) {
+      return { ...mockSettings, activePetId: id };
+    }
+    return invoke<Settings>("content_activate", { kind: "pet", id });
   },
   onTimerSnapshot: async (cb: (snapshot: TimerSnapshot) => void) => {
     if (!isTauriAvailable()) {

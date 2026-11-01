@@ -234,6 +234,11 @@ class TimerStore {
     await ipcClient.resetOverlayPosition();
   }
 
+  public async activatePet(id: string): Promise<void> {
+    const updated = await ipcClient.activatePet(id);
+    this.update((prev) => computeDerived(prev.snapshot, updated, prev.skew, prev.alertActive));
+  }
+
   public async quit(): Promise<void> {
     await ipcClient.quitApp();
   }

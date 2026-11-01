@@ -1,17 +1,21 @@
 import { useState, type MouseEvent, type KeyboardEvent } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useTimer } from "../../lib/stores/useTimer";
+import { PetRenderer } from "../../lib/pet/PetRenderer";
+import { BUILTIN_PETS } from "../../lib/pet/builtin";
 
 export function OverlayApp() {
   const {
     snapshot,
     settings,
     formattedTime,
+    petState,
     alertActive,
     toggleRunning,
     skip,
     openPanel,
     resetPosition,
+    activatePet,
     setClickThrough,
     quit,
   } = useTimer();
@@ -67,6 +71,9 @@ export function OverlayApp() {
 
   const scale = settings.overlay.scale || 1.0;
   const opacity = settings.overlay.opacity || 1.0;
+  const petId = settings.activePetId || "gato-clasico";
+  const defaultManifest = BUILTIN_PETS["gato-clasico"]!;
+  const manifest = BUILTIN_PETS[petId] ?? defaultManifest;
 
   return (
     <div
@@ -85,6 +92,15 @@ export function OverlayApp() {
         role="region"
         aria-label={`Temporizador Pomodoro: ${phaseLabel}, ${formattedTime}, ${snapshot.status}`}
       >
+        <div className="overlay__pet-wrapper">
+          <PetRenderer
+            petId={petId}
+            manifest={manifest}
+            state={petState}
+            size={76}
+            reducedMotion={settings.reducedMotion === "on"}
+          />
+        </div>
         <div className="overlay__pill">
           <div className="overlay__header">
             <span className="overlay__drag-grip" title="Arrastrar ventana">
@@ -142,6 +158,17 @@ export function OverlayApp() {
             Saltar a siguiente fase
           </button>
           <hr className="context-menu__divider" />
+          <button
+            type="button"
+            className="context-menu__item"
+            onClick={() => {
+              setMenuOpen(false);
+              const nextPet = petId === "gato-clasico" ? "nano-panda" : "gato-clasico";
+              void activatePet(nextPet);
+            }}
+          >
+            Mascota: {petId === "gato-clasico" ? "Usar Nano Panda" : "Usar Gato Clásico"}
+          </button>
           <button
             type="button"
             className="context-menu__item"
