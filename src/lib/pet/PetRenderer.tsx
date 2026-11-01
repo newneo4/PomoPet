@@ -1,6 +1,7 @@
 import { memo, type CSSProperties } from "react";
 import type { PetManifest, PetStateConfig } from "./types";
 import type { PetState } from "./petState";
+import { usePetSprite } from "./usePetSprite";
 import "./pet.css";
 
 export interface PetRendererProps {
@@ -31,6 +32,7 @@ export function computePetStyle(
     size?: number;
     progress?: number;
     reducedMotion?: boolean;
+    overrideUrl?: string;
   } = {},
 ): ComputedPetStyle {
   const [frameW, frameH] = manifest.frameSize;
@@ -46,7 +48,7 @@ export function computePetStyle(
   const durationSec = frames / fps;
   const totalSheetWidth = columns * frameW;
 
-  const sheetUrl = `http://pack.localhost/pets/${petId}/${stateConfig.sheet}`;
+  const sheetUrl = options.overrideUrl || `pack://localhost/pets/${petId}/${stateConfig.sheet}`;
   const renderClass =
     manifest.render === "pixelated" ? "pet-sprite--pixelated" : "pet-sprite--smooth";
 
@@ -99,10 +101,14 @@ export function PetRendererImpl({
   reducedMotion = false,
   size,
 }: PetRendererProps) {
+  const stateConfig: PetStateConfig = manifest.states[state] || manifest.states.idle;
+  const spriteUrl = usePetSprite(petId, stateConfig.sheet);
+
   const computed = computePetStyle(petId, manifest, state, {
     progress,
     reducedMotion,
     size,
+    overrideUrl: spriteUrl,
   });
 
   const [frameW, frameH] = manifest.frameSize;

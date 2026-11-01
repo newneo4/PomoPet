@@ -167,6 +167,7 @@ pub fn run() -> tauri::Result<()> {
             commands::app_quit,
             content::content_list_installed,
             content::content_get_pet_manifest,
+            content::content_get_sprite,
             content::content_activate,
         ])
         .run(tauri::generate_context!())

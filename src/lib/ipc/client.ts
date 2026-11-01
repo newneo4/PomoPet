@@ -19,6 +19,7 @@ export interface IpcClient {
   openPanel(tab?: string): Promise<void>;
   quitApp(): Promise<void>;
   activatePet(id: string): Promise<Settings>;
+  getPetSprite(petId: string, sheet: string): Promise<string>;
   onTimerSnapshot(cb: (snapshot: TimerSnapshot) => void): Promise<UnlistenFn>;
   onTimerExpired(cb: (expiration: Expiration) => void): Promise<UnlistenFn>;
   onSettingsChanged(cb: (settings: Settings) => void): Promise<UnlistenFn>;
@@ -97,6 +98,12 @@ export const ipcClient: IpcClient = {
       return { ...mockSettings, activePetId: id };
     }
     return invoke<Settings>("content_activate", { kind: "pet", id });
+  },
+  getPetSprite: async (petId: string, sheet: string) => {
+    if (!isTauriAvailable()) {
+      return "";
+    }
+    return invoke<string>("content_get_sprite", { petId, sheet });
   },
   onTimerSnapshot: async (cb: (snapshot: TimerSnapshot) => void) => {
     if (!isTauriAvailable()) {

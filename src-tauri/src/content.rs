@@ -3,8 +3,9 @@
 //! Registers the `pack://` custom URI scheme and serves verified pack assets.
 
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
+use base64::Engine;
 use pomopet_core::Settings;
 use serde::{Deserialize, Serialize};
 use tauri::http::{Response, StatusCode};
@@ -73,13 +74,27 @@ pub fn resolve_pack_asset(app: &AppHandle, relative_path: &str) -> Option<PathBu
         return None;
     }
 
-    // 1. Check workspace/dev `packs/` directory
-    let dev_path = PathBuf::from("packs").join(clean);
-    if dev_path.is_file() {
-        return Some(dev_path);
+    // Search locations in priority order:
+    // 1. Compile-time workspace root (always resolves to workspace /packs in dev/test)
+    if let Some(parent) = Path::new(env!("CARGO_MANIFEST_DIR")).parent() {
+        let p = parent.join("packs").join(clean);
+        if p.is_file() {
+            return Some(p);
+        }
     }
 
-    // 2. Check bundled resources directory
+    // 2. Relative to current dir (running from root or src-tauri)
+    let p_local = PathBuf::from("packs").join(clean);
+    if p_local.is_file() {
+        return Some(p_local);
+    }
+
+    let p_parent = PathBuf::from("../packs").join(clean);
+    if p_parent.is_file() {
+        return Some(p_parent);
+    }
+
+    // 3. Bundled resources directory in release build
     if let Ok(resource_dir) = app.path().resource_dir() {
         let res_path = resource_dir.join("packs").join(clean);
         if res_path.is_file() {
@@ -87,7 +102,7 @@ pub fn resolve_pack_asset(app: &AppHandle, relative_path: &str) -> Option<PathBu
         }
     }
 
-    // 3. Check user app_data packs directory
+    // 4. User app_data packs directory for installed packs
     if let Ok(app_data) = app.path().app_data_dir() {
         let user_path = app_data.join("packs").join(clean);
         if user_path.is_file() {
@@ -107,8 +122,16 @@ pub fn handle_pack_request(app: &AppHandle, uri_str: &str) -> Response<Vec<u8>> 
             .unwrap();
     };
 
-    let path_str = uri.path();
-    let Some(file_path) = resolve_pack_asset(app, path_str) else {
+    let host = uri.host().unwrap_or("");
+    let path = uri.path();
+    let relative_path = if host != "localhost" && host != "pack.localhost" && !host.is_empty() {
+        format!("{}/{}", host, path.trim_start_matches('/'))
+    } else {
+        path.trim_start_matches('/').to_string()
+    };
+
+    let Some(file_path) = resolve_pack_asset(app, &relative_path) else {
+        eprintln!("[PomoPet Pack Protocol] File not found: {}", relative_path);
         return Response::builder()
             .status(StatusCode::NOT_FOUND)
             .header("Access-Control-Allow-Origin", "*")
@@ -178,7 +201,7 @@ pub fn content_list_installed(
                 license: manifest.license,
                 bundled: true,
                 active: manifest.id == active_pet_id,
-                preview_url: format!("http://pack.localhost/pets/{}/preview.png", manifest.id),
+                preview_url: format!("pack://localhost/pets/{}/preview.png", manifest.id),
             });
         }
     }
@@ -200,6 +223,30 @@ pub fn content_get_pet_manifest(app: AppHandle, pet_id: String) -> Result<PetMan
         .map_err(|e| AppError::invalid_argument(format!("invalid manifest: {}", e)))?;
 
     Ok(manifest)
+}
+
+#[tauri::command]
+pub fn content_get_sprite(
+    app: AppHandle,
+    pet_id: String,
+    sheet: String,
+) -> Result<String, AppError> {
+    let relative = format!("pets/{}/{}", pet_id, sheet.trim_start_matches('/'));
+    let Some(file_path) = resolve_pack_asset(&app, &relative) else {
+        return Err(AppError::not_found("errors.asset_not_found"));
+    };
+
+    let bytes =
+        fs::read(&file_path).map_err(|e| AppError::io("errors.read_failed", e.to_string()))?;
+
+    let mime = if relative.ends_with(".webp") {
+        "image/webp"
+    } else {
+        "image/png"
+    };
+
+    let b64 = base64::engine::general_purpose::STANDARD.encode(&bytes);
+    Ok(format!("data:{};base64,{}", mime, b64))
 }
 
 #[tauri::command]
