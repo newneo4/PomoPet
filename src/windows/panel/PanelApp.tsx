@@ -72,7 +72,7 @@ export function PanelApp() {
   const handleClose = async () => {
     try {
       const { getCurrentWindow } = await import("@tauri-apps/api/window");
-      await getCurrentWindow().close();
+      await getCurrentWindow().hide();
     } catch {
       // Browser fallback
     }
