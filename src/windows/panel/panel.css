@@ -710,6 +710,22 @@ body,
   background: rgba(99, 102, 241, 0.08);
 }
 
+.theme-card--exclusive {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.03);
+}
+
+.theme-card--exclusive:hover {
+  border-color: rgba(245, 158, 11, 0.65);
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.theme-card--exclusive.theme-card--selected {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
+}
+
 .theme-card__header {
   display: flex;
   align-items: center;
@@ -736,6 +752,17 @@ body,
   border-radius: 10px;
   background: var(--accent);
   color: #ffffff;
+}
+
+.theme-card__tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.18);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  letter-spacing: 0.02em;
 }
 
 .theme-card__desc {

@@ -47,8 +47,8 @@
     "themeBarraDesc": "Barra horizontal estilizada con indicador de progreso continuo",
     "themeMinimalista": "Minimalista",
     "themeMinimalistaDesc": "Tipografía discreta con punto de estado y controles al pasar el cursor",
-    "themeHueso": "Huesito (Mielcita)",
-    "themeHuesoDesc": "Diseño lúdico en forma de hueso perruno con huellitas y acento caramelo",
+    "themePetSkinned": "Reloj Exclusivo de Mielcita",
+    "themePetSkinnedDesc": "Marco gráfico temático con progreso integrado diseñado exclusivamente para Mielcita",
     "scale": "Escala de la ventana",
     "scaleHelp": "Tamaño del reloj y la mascota (50% a 200%)",
     "opacity": "Opacidad",
@@ -68,7 +68,12 @@
     "activate": "Activar",
     "author": "Autor",
     "version": "Versión",
-    "bundled": "Incluida"
+    "bundled": "Incluida",
+    "exclusive": "Exclusivo",
+    "importPet": "Importar Mascota",
+    "importPetHelp": "Selecciona una carpeta o archivos de mascota para instalarla en caliente",
+    "importSuccess": "¡Mascota instalada con éxito!",
+    "importError": "Error al instalar el paquete de mascota"
   },
   "general": {
     "title": "Preferencias Generales",
@@ -86,27 +91,46 @@
     "reducedMotionOff": "Animación completa"
   },
   "dialogues": {
-    "mielcita": {
+    "default": {
       "focusStart": [
-        "¡A recolectar logros! 🍯",
-        "¡Modo dulce concentración activado! 🐝",
-        "¡Tú puedes con esta tarea, a volar!",
-        "¡Zzzoom! Enfoque total."
+        "¡A concentrarse con todo!",
+        "¡Sesión de enfoque iniciada! Tú puedes.",
+        "Mente despejada y ritmo constante.",
+        "¡A por este bloque de trabajo!"
       ],
       "breakStart": [
-        "¡Gran trabajo! Estira las alitas y toma agua 💧",
-        "Momento de descansar las patitas y recargar polen 🌸",
-        "¡Qué sesión tan productiva! Respira hondo."
+        "¡Gran sesión! Respira hondo y toma agua 💧",
+        "Momento de estirarse y relajar la vista.",
+        "¡Pausa bien merecida! Descansa un momento."
+      ],
+      "alert": ["¡Tiempo cumplido! ¡Excelente esfuerzo! 🎉", "¡Ciclo completado con éxito! ⏰"],
+      "poke": [
+        "¡Aquí estoy acompañándote! ❤️",
+        "¡Sigue a tu propio ritmo, lo haces genial!",
+        "¡Concéntrate, tú tienes esto bajo control! ✨"
+      ]
+    },
+    "mielcita": {
+      "focusStart": [
+        "¡Guau! Me quedo a tus patitas mientras trabajas 🐾",
+        "¡Modo guardiana activado! A concentrarse ❤️",
+        "Orejas atentas... ¡tú puedes con esta tarea!",
+        "¡Colita feliz! Concentración total."
+      ],
+      "breakStart": [
+        "¡Gran trabajo! ¡Hora de estirar las patitas y tomar agua! 💧",
+        "¡Buen bloque! Tómate un descansito bien merecido 🐾",
+        "¡Guau! Respira hondo y relaja los hombros."
       ],
       "alert": [
-        "¡Bzzzz! ¡Tiempo cumplido, lo lograste! 🎉",
-        "¡Alarma cumplida! ¡Excelente esfuerzo!"
+        "¡Guau guau! ¡Tiempo cumplido, lo lograste! 🎉",
+        "¡Alarma cumplida! ¡Excelente esfuerzo, qué orgullo! 🦴"
       ],
       "poke": [
-        "¡Bzz! Aquí cuidando tu ritmo ❤️",
-        "¡Ponte dulce y sigue enfocado!",
-        "¡Aquí estoy contigo! ¡A por ello!",
-        "¿Necesitas un empujón? ¡Tú eres genial! 🐝"
+        "¡Muevo la colita! Aquí cuidando tu ritmo ❤️",
+        "¡Un cariñito y seguimos con todo! 🐾",
+        "¡Guau! ¡Aquí estoy contigo, eres genial!",
+        "¿Me das una caricia? ¡Vamos que se puede! 🦴"
       ]
     },
     "gato-clasico": {

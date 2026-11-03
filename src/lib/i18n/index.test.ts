@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { resolveLanguage, translate } from "./index";
+import { resolveLanguage, translate, getPetDialogue } from "./index";
+import type { PetManifest } from "../pet/types";
 import esDict from "./es.json";
 import enDict from "./en.json";
 
@@ -46,5 +47,84 @@ describe("i18n module", () => {
     const enKeys = getKeys(enDict);
 
     expect(esKeys).toEqual(enKeys);
+  });
+
+  it("prioritizes dialogues from pet manifest in requested language", () => {
+    const mockManifest: PetManifest = {
+      schema: 1,
+      type: "pet",
+      id: "alien-pet",
+      name: "Alien",
+      version: "1.0.0",
+      author: "Test",
+      license: "MIT",
+      frameSize: [128, 128],
+      states: {
+        idle: { sheet: "idle.png", frames: 1, mode: "loop" },
+        focus: { sheet: "focus.png", frames: 1, mode: "loop" },
+        break: { sheet: "break.png", frames: 1, mode: "loop" },
+        alert: { sheet: "alert.png", frames: 1, mode: "once" },
+      },
+      dialogues: {
+        en: {
+          focusStart: ["Telepathic focus initiated 🛸"],
+        },
+      },
+    };
+
+    const dialogue = getPetDialogue("alien-pet", "focusStart", "en", mockManifest);
+    expect(dialogue).toBe("Telepathic focus initiated 🛸");
+  });
+
+  it("falls back to manifest Spanish dialogues when English is missing in manifest", () => {
+    const mockManifest: PetManifest = {
+      schema: 1,
+      type: "pet",
+      id: "alien-pet",
+      name: "Alien",
+      version: "1.0.0",
+      author: "Test",
+      license: "MIT",
+      frameSize: [128, 128],
+      states: {
+        idle: { sheet: "idle.png", frames: 1, mode: "loop" },
+        focus: { sheet: "focus.png", frames: 1, mode: "loop" },
+        break: { sheet: "break.png", frames: 1, mode: "loop" },
+        alert: { sheet: "alert.png", frames: 1, mode: "once" },
+      },
+      dialogues: {
+        es: {
+          focusStart: ["Enfoque alienígena activado 🛸"],
+        },
+      },
+    };
+
+    const dialogue = getPetDialogue("alien-pet", "focusStart", "en", mockManifest);
+    expect(dialogue).toBe("Enfoque alienígena activado 🛸");
+  });
+
+  it("falls back to neutral default dialogues for a pet without custom dialogues", () => {
+    const mockManifest: PetManifest = {
+      schema: 1,
+      type: "pet",
+      id: "perro-basico",
+      name: "Perro Básico",
+      version: "1.0.0",
+      author: "Test",
+      license: "MIT",
+      frameSize: [128, 128],
+      states: {
+        idle: { sheet: "idle.png", frames: 1, mode: "loop" },
+        focus: { sheet: "focus.png", frames: 1, mode: "loop" },
+        break: { sheet: "break.png", frames: 1, mode: "loop" },
+        alert: { sheet: "alert.png", frames: 1, mode: "once" },
+      },
+    };
+
+    const dialogue = getPetDialogue("perro-basico", "focusStart", "es", mockManifest);
+    expect(esDict.dialogues.default.focusStart).toContain(dialogue);
+    // Crucial: ensure no cross-contamination from other pets
+    expect(esDict.dialogues.mielcita.focusStart).not.toContain(dialogue);
+    expect(esDict.dialogues["gato-clasico"].focusStart).not.toContain(dialogue);
   });
 });

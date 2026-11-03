@@ -57,20 +57,6 @@ export const BUILTIN_THEMES: Record<string, ThemeManifest> = {
       radius: 10,
     },
   },
-  hueso: {
-    schema: 1,
-    id: "hueso",
-    name: "Huesito (Mielcita)",
-    description: "Reloj temático en forma de hueso perruno con huellitas y diseño lúdico",
-    layout: "hueso",
-    tokens: {
-      text: "#fef3c7",
-      accent: "#f59e0b",
-      accentBreak: "#10b981",
-      background: "rgba(40, 24, 14, 0.92)",
-      radius: 28,
-    },
-  },
 };
 
 export const DEFAULT_THEME_ID = "clasico";

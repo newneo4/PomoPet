@@ -47,8 +47,8 @@
     "themeBarraDesc": "Stylized horizontal bar with continuous progress line",
     "themeMinimalista": "Minimalist",
     "themeMinimalistaDesc": "Discreet typography with status indicator dot and hover controls",
-    "themeHueso": "Bone (Mielcita)",
-    "themeHuesoDesc": "Playful dog-bone shape with paw prints and caramel biscuit accent",
+    "themePetSkinned": "Mielcita's Exclusive Clock",
+    "themePetSkinnedDesc": "Themed graphic frame with integrated progress bar designed exclusively for Mielcita",
     "scale": "Window scale",
     "scaleHelp": "Size of the clock and mascot (50% to 200%)",
     "opacity": "Opacity",
@@ -68,7 +68,12 @@
     "activate": "Activate",
     "author": "Author",
     "version": "Version",
-    "bundled": "Bundled"
+    "bundled": "Bundled",
+    "exclusive": "Exclusive",
+    "importPet": "Import Mascot",
+    "importPetHelp": "Select a mascot folder or files to install it on the fly",
+    "importSuccess": "Mascot installed successfully!",
+    "importError": "Failed to install mascot pack"
   },
   "general": {
     "title": "General Preferences",
@@ -86,24 +91,46 @@
     "reducedMotionOff": "Full animation"
   },
   "dialogues": {
-    "mielcita": {
+    "default": {
       "focusStart": [
-        "Time to harvest some goals! 🍯",
-        "Sweet focus mode activated! 🐝",
-        "You've got this, let's fly!",
-        "Zzzoom! Full focus."
+        "Time to focus and shine!",
+        "Focus session started! You've got this.",
+        "Clear mind, steady rhythm.",
+        "Let's conquer this work block!"
       ],
       "breakStart": [
-        "Great job! Stretch your wings and drink water 💧",
-        "Time to rest your paws and recharge pollen 🌸",
-        "Such a productive session! Take a deep breath."
+        "Great session! Take a deep breath and drink water 💧",
+        "Time to stretch your legs and rest your eyes.",
+        "Well-deserved break! Relax a moment."
       ],
-      "alert": ["Bzzzz! Time's up, you did it! 🎉", "Pomodoro complete! Awesome effort!"],
+      "alert": ["Time's up! Outstanding effort! 🎉", "Cycle successfully completed! ⏰"],
       "poke": [
-        "Bzz! Right here cheering you on ❤️",
-        "Stay sweet and focused!",
-        "I'm here with you! Let's get it done!",
-        "Need a boost? You are doing great! 🐝"
+        "Right here keeping you company! ❤️",
+        "Keep your own pace, you are doing wonderfully!",
+        "Stay focused, you have this under control! ✨"
+      ]
+    },
+    "mielcita": {
+      "focusStart": [
+        "Woof! Staying right by your feet while you work 🐾",
+        "Guardian mode activated! Time to focus ❤️",
+        "Ears up... you can totally do this!",
+        "Happy tail! Full concentration."
+      ],
+      "breakStart": [
+        "Great job! Time to stretch paws and drink water! 💧",
+        "Awesome block! Enjoy a well-deserved rest 🐾",
+        "Woof! Deep breath and relax those shoulders."
+      ],
+      "alert": [
+        "Woof woof! Time is up, you did it! 🎉",
+        "Timer complete! Awesome effort, so proud! 🦴"
+      ],
+      "poke": [
+        "Tail wagging! Keeping you company ❤️",
+        "One quick head pat and back to work! 🐾",
+        "Woof! Right here with you, you're doing great!",
+        "Give me a pet? Let's keep going! 🦴"
       ]
     },
     "gato-clasico": {

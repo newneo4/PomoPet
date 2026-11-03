@@ -4,6 +4,8 @@ import type { Expiration } from "./generated/Expiration";
 import type { Settings } from "./generated/Settings";
 import type { SettingsPatch } from "./generated/SettingsPatch";
 import type { TimerSnapshot } from "./generated/TimerSnapshot";
+import type { PetManifest } from "../pet/types";
+import { BUILTIN_PETS } from "../pet/builtin";
 
 export interface InstalledPack {
   kind: "pet" | "theme";
@@ -15,6 +17,15 @@ export interface InstalledPack {
   bundled: boolean;
   active: boolean;
   previewUrl: string;
+}
+
+export interface PackFileEntry {
+  relativePath: string;
+  dataBase64: string;
+}
+
+export interface InstallPetPackPayload {
+  files: PackFileEntry[];
 }
 
 export interface IpcClient {
@@ -34,6 +45,8 @@ export interface IpcClient {
   listInstalledPacks(): Promise<InstalledPack[]>;
   activatePet(id: string): Promise<Settings>;
   getPetSprite(petId: string, sheet: string): Promise<string>;
+  getPetManifest(petId: string): Promise<PetManifest>;
+  installPetPack(payload: InstallPetPackPayload): Promise<InstalledPack>;
   onTimerSnapshot(cb: (snapshot: TimerSnapshot) => void): Promise<UnlistenFn>;
   onTimerExpired(cb: (expiration: Expiration) => void): Promise<UnlistenFn>;
   onSettingsChanged(cb: (settings: Settings) => void): Promise<UnlistenFn>;
@@ -129,6 +142,33 @@ export const ipcClient: IpcClient = {
       return "";
     }
     return invoke<string>("content_get_sprite", { petId, sheet });
+  },
+  getPetManifest: async (petId: string) => {
+    if (!isTauriAvailable()) {
+      return BUILTIN_PETS[petId] || BUILTIN_PETS["mielcita"] || BUILTIN_PETS["gato-clasico"]!;
+    }
+    return invoke<PetManifest>("content_get_pet_manifest", { petId });
+  },
+  installPetPack: async (payload: InstallPetPackPayload) => {
+    if (!isTauriAvailable()) {
+      const manifestFile = payload.files.find((f) => f.relativePath.endsWith("pet.json"));
+      const manifestStr = manifestFile ? atob(manifestFile.dataBase64) : "{}";
+      const manifest = JSON.parse(manifestStr) as PetManifest;
+      const pack: InstalledPack = {
+        kind: "pet",
+        id: manifest.id || "imported-pet",
+        name: manifest.name || "Mascota Importada",
+        version: manifest.version || "1.0.0",
+        author: manifest.author || "Autor",
+        license: manifest.license || "CC-BY-4.0",
+        bundled: false,
+        active: false,
+        previewUrl: `pack://localhost/pets/${manifest.id || "imported-pet"}/preview.png`,
+      };
+      mockPacks.push(pack);
+      return pack;
+    }
+    return invoke<InstalledPack>("content_install_pack", { payload });
   },
   onTimerSnapshot: async (cb: (snapshot: TimerSnapshot) => void) => {
     if (!isTauriAvailable()) {

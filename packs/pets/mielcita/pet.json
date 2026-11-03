@@ -6,9 +6,10 @@
   "version": "1.0.0",
   "author": "Nano Banana & PomoPet",
   "license": "CC-BY-4.0",
-  "description": "Una tierna abejita animada que descansa mientras trabajas y celebra cuando completas tu sesión.",
+  "description": "Una tierna perrita chihuahua que te acompaña en tus sesiones de enfoque y celebra cuando completas tu tiempo.",
   "frameSize": [128, 128],
   "render": "smooth",
+  "particles": ["❤️", "🐾", "🦴", "✨", "💖"],
   "states": {
     "idle": {
       "sheet": "sprites/idle.png",
@@ -47,6 +48,72 @@
       "columns": 1,
       "mode": "loop",
       "fps": 1
+    }
+  },
+  "dialogues": {
+    "es": {
+      "focusStart": [
+        "¡Guau! Me quedo a tus patitas mientras trabajas 🐾",
+        "¡Modo guardiana activado! A concentrarse ❤️",
+        "Orejas atentas... ¡tú puedes con esta tarea!",
+        "¡Colita feliz! Concentración total."
+      ],
+      "breakStart": [
+        "¡Gran trabajo! ¡Hora de estirar las patitas y tomar agua! 💧",
+        "¡Buen bloque! Tómate un descansito bien merecido 🐾",
+        "¡Guau! Respira hondo y relaja los hombros."
+      ],
+      "alert": [
+        "¡Guau guau! ¡Tiempo cumplido, lo lograste! 🎉",
+        "¡Alarma cumplida! ¡Excelente esfuerzo, qué orgullo! 🦴"
+      ],
+      "poke": [
+        "¡Muevo la colita! Aquí cuidando tu ritmo ❤️",
+        "¡Un cariñito y seguimos con todo! 🐾",
+        "¡Guau! ¡Aquí estoy contigo, eres genial!",
+        "¿Me das una caricia? ¡Vamos que se puede! 🦴"
+      ]
+    },
+    "en": {
+      "focusStart": [
+        "Woof! Staying right by your feet while you work 🐾",
+        "Guardian mode activated! Time to focus ❤️",
+        "Ears up... you can totally do this!",
+        "Happy tail! Full concentration."
+      ],
+      "breakStart": [
+        "Great job! Time to stretch paws and drink water! 💧",
+        "Awesome block! Enjoy a well-deserved rest 🐾",
+        "Woof! Deep breath and relax those shoulders."
+      ],
+      "alert": [
+        "Woof woof! Time is up, you did it! 🎉",
+        "Timer complete! Awesome effort, so proud! 🦴"
+      ],
+      "poke": [
+        "Tail wagging! Keeping you company ❤️",
+        "One quick head pat and back to work! 🐾",
+        "Woof! Right here with you, you're doing great!",
+        "Give me a pet? Let's keep going! 🦴"
+      ]
+    }
+  },
+  "clock": {
+    "mode": "skinned",
+    "size": [220, 64],
+    "frameAsset": "sprites/clock_frame.png",
+    "progress": {
+      "type": "horizontal-bar",
+      "inset": [14, 38, 14, 38],
+      "colorFocus": "#f59e0b",
+      "colorBreak": "#10b981"
+    },
+    "tokens": {
+      "text": "#fffbeb",
+      "accent": "#f59e0b",
+      "accentBreak": "#10b981",
+      "background": "#28180e",
+      "radius": 8
     }
   }
 }

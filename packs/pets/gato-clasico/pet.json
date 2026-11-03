@@ -9,6 +9,7 @@
   "description": "El gato original de PomoPet ilustrado con Nano Banana. Duerme mientras trabajas y despierta al sonar la alarma.",
   "frameSize": [128, 128],
   "render": "smooth",
+  "particles": ["❤️", "🐾", "✨", "🐟", "💤"],
   "states": {
     "idle": {
       "sheet": "sprites/idle.png",
@@ -44,6 +45,44 @@
       "columns": 1,
       "mode": "loop",
       "fps": 1
+    }
+  },
+  "dialogues": {
+    "es": {
+      "focusStart": [
+        "Miau... me duermo mientras trabajas 🐾",
+        "Te vigilo de reojo... ¡a concentrarse!",
+        "Ronroneo de productividad activado."
+      ],
+      "breakStart": [
+        "¡Miau! Hora de estirarse como gato 🧘",
+        "Descanso merecido... ¡ve por un poco de agua!",
+        "Buen bloque de foco. A descansar las patitas."
+      ],
+      "alert": ["¡Miau miau! ¡Tiempo terminado! ⏰", "¡Desperté! ¡Sesión completada con éxito!"],
+      "poke": [
+        "¡Ronroneo! Aquí estoy acompañándote 🐾",
+        "¡Miau! Concéntrate, que yo te cuido.",
+        "Una caricia y seguimos produciendo ❤️"
+      ]
+    },
+    "en": {
+      "focusStart": [
+        "Meow... sleeping while you work 🐾",
+        "Watching you with one eye... time to focus!",
+        "Productivity purr activated."
+      ],
+      "breakStart": [
+        "Meow! Time for a good cat stretch 🧘",
+        "Well-deserved break... go grab some water!",
+        "Great focus block. Rest those paws."
+      ],
+      "alert": ["Meow meow! Time is up! ⏰", "I'm awake! Session completed successfully!"],
+      "poke": [
+        "Purrr! Keeping you company 🐾",
+        "Meow! Keep focused, I got your back.",
+        "One quick pet and back to work ❤️"
+      ]
     }
   }
 }

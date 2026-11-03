@@ -7,6 +7,37 @@ export interface PetStateConfig {
   loopStart?: number;
 }
 
+export interface PetDialogueCategory {
+  focusStart?: string[];
+  breakStart?: string[];
+  alert?: string[];
+  poke?: string[];
+}
+
+export interface PetClockProgress {
+  type: "horizontal-bar" | "vertical-bar";
+  inset?: [number, number, number, number];
+  colorFocus?: string;
+  colorBreak?: string;
+}
+
+export interface PetClockTokens {
+  text?: string;
+  accent?: string;
+  accentBreak?: string;
+  background?: string;
+  radius?: number;
+}
+
+export interface PetClockConfig {
+  mode: "native" | "skinned";
+  layout?: string;
+  tokens?: PetClockTokens;
+  size?: [number, number];
+  frameAsset?: string;
+  progress?: PetClockProgress;
+}
+
 export interface PetManifest {
   schema: number;
   type: "pet";
@@ -26,4 +57,7 @@ export interface PetManifest {
     paused?: PetStateConfig;
     [key: string]: PetStateConfig | undefined;
   };
+  dialogues?: Record<string, PetDialogueCategory>;
+  particles?: string[];
+  clock?: PetClockConfig;
 }

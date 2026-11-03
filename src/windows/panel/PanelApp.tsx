@@ -5,6 +5,8 @@ import { useI18n } from "../../lib/i18n";
 import { playChime } from "../../lib/sound";
 import { validateNumberField, SETTINGS_LIMITS } from "../../lib/stores/settingsValidators";
 import { BUILTIN_THEMES } from "../../lib/themes/builtinThemes";
+import { usePetManifest } from "../../lib/pet/usePetManifest";
+import { ipcClient, type PackFileEntry } from "../../lib/ipc/client";
 import { PetCard } from "./PetCard";
 import type { Language } from "../../lib/ipc/generated/Language";
 import type { ReducedMotion } from "../../lib/ipc/generated/ReducedMotion";
@@ -56,6 +58,52 @@ export function PanelApp() {
 
   const language = settings?.language ?? "system";
   const { t } = useI18n(language);
+  const activePetId = settings?.activePetId || "mielcita";
+  const { manifest: activePetManifest } = usePetManifest(activePetId);
+  const [importStatus, setImportStatus] = useState<string | null>(null);
+
+  const handleActivatePet = async (petId: string) => {
+    await activatePet(petId);
+    if (
+      petId === "mielcita" &&
+      (!settings?.activeThemeId || settings.activeThemeId === "clasico")
+    ) {
+      void updateSettings({ activeThemeId: "pet-skinned" });
+    } else if (petId !== "mielcita" && settings?.activeThemeId === "pet-skinned") {
+      void updateSettings({ activeThemeId: "clasico" });
+    }
+  };
+
+  const handleImportFiles = async (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setImportStatus(t("status.saving"));
+    try {
+      const fileEntries: PackFileEntry[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]!;
+        const relativePath = file.webkitRelativePath || file.name;
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        let binary = "";
+        for (let b = 0; b < bytes.byteLength; b++) {
+          binary += String.fromCharCode(bytes[b]!);
+        }
+        const dataBase64 = btoa(binary);
+        fileEntries.push({ relativePath, dataBase64 });
+      }
+
+      const installed = await ipcClient.installPetPack({ files: fileEntries });
+      setImportStatus(t("pets.importSuccess"));
+      void handleActivatePet(installed.id);
+      setTimeout(() => setImportStatus(null), 3000);
+    } catch {
+      setImportStatus(t("pets.importError"));
+      setTimeout(() => setImportStatus(null), 4000);
+    }
+    e.target.value = "";
+  };
 
   // Local editing drafts map to allow smooth typing without jumping or desyncing
   const [editingDrafts, setEditingDrafts] = useState<Record<string, string>>({});
@@ -478,9 +526,7 @@ export function PanelApp() {
                           ? "━"
                           : themeItem.layout === "minimal"
                             ? "·"
-                            : themeItem.layout === "hueso"
-                              ? "🦴"
-                              : "⏱";
+                            : "⏱";
 
                     return (
                       <div
@@ -525,6 +571,59 @@ export function PanelApp() {
                       </div>
                     );
                   })}
+                  {activePetManifest?.clock?.mode === "skinned" && (
+                    <div
+                      key="pet-skinned"
+                      className={`theme-card theme-card--exclusive ${settings.activeThemeId === "pet-skinned" ? "theme-card--selected" : ""}`}
+                      onClick={() => void updateSettings({ activeThemeId: "pet-skinned" })}
+                      role="radio"
+                      aria-checked={settings.activeThemeId === "pet-skinned"}
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === " " || e.key === "Enter") {
+                          e.preventDefault();
+                          void updateSettings({ activeThemeId: "pet-skinned" });
+                        }
+                      }}
+                    >
+                      <div className="theme-card__header">
+                        <span className="theme-card__icon">🐾</span>
+                        <span className="theme-card__title">{t("overlay.themePetSkinned")}</span>
+                        {settings.activeThemeId === "pet-skinned" ? (
+                          <span className="theme-card__badge">{t("pets.active")}</span>
+                        ) : (
+                          <span className="theme-card__tag">✨ {t("pets.exclusive")}</span>
+                        )}
+                      </div>
+                      <p className="theme-card__desc">{t("overlay.themePetSkinnedDesc")}</p>
+                      <div className="theme-card__palette" aria-hidden="true">
+                        <span
+                          className="theme-card__swatch"
+                          style={{
+                            backgroundColor:
+                              activePetManifest.clock.progress?.colorFocus || "#f59e0b",
+                          }}
+                          title="Acento Foco"
+                        />
+                        <span
+                          className="theme-card__swatch"
+                          style={{
+                            backgroundColor:
+                              activePetManifest.clock.progress?.colorBreak || "#10b981",
+                          }}
+                          title="Acento Descanso"
+                        />
+                        <span
+                          className="theme-card__swatch"
+                          style={{
+                            backgroundColor:
+                              activePetManifest.clock.tokens?.background || "#28180e",
+                          }}
+                          title="Fondo Temático"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -645,8 +744,55 @@ export function PanelApp() {
               aria-labelledby="tab-pets"
               className="tab-panel"
             >
-              <h2 className="tab-panel__title">{t("pets.title")}</h2>
-              <p className="tab-panel__subtitle">{t("pets.subtitle")}</p>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  marginBottom: "16px",
+                  flexWrap: "wrap",
+                  gap: "12px",
+                }}
+              >
+                <div>
+                  <h2 className="tab-panel__title" style={{ margin: 0 }}>
+                    {t("pets.title")}
+                  </h2>
+                  <p className="tab-panel__subtitle" style={{ margin: "4px 0 0" }}>
+                    {t("pets.subtitle")}
+                  </p>
+                </div>
+                <div>
+                  <label
+                    className="btn btn--secondary"
+                    style={{
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                    title={t("pets.importPetHelp")}
+                  >
+                    <span>📥 {t("pets.importPet")}</span>
+                    <input
+                      type="file"
+                      multiple
+                      style={{ display: "none" }}
+                      onChange={handleImportFiles}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {importStatus && (
+                <div
+                  className="alert-box alert-box--info"
+                  style={{ marginBottom: "16px" }}
+                  role="status"
+                >
+                  ℹ️ {importStatus}
+                </div>
+              )}
 
               <div className="pets-grid">
                 {installedPacks.map((pack) => (
@@ -655,7 +801,7 @@ export function PanelApp() {
                     pack={pack}
                     active={pack.id === settings.activePetId}
                     language={language}
-                    onActivate={(id) => void activatePet(id)}
+                    onActivate={(id) => void handleActivatePet(id)}
                   />
                 ))}
               </div>

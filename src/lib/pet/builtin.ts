@@ -13,6 +13,7 @@ export const BUILTIN_PETS: Record<string, PetManifest> = {
       "El gato original de PomoPet. Duerme mientras trabajas y despierta al sonar la alarma.",
     frameSize: [128, 128],
     render: "smooth",
+    particles: ["❤️", "🐾", "✨", "🐟", "💤"],
     states: {
       idle: {
         sheet: "sprites/idle.png",
@@ -62,6 +63,7 @@ export const BUILTIN_PETS: Record<string, PetManifest> = {
     description: "Un tierno panda chibi que te acompaña en tus sesiones de foco.",
     frameSize: [128, 128],
     render: "smooth",
+    particles: ["❤️", "🎋", "✨", "🐼", "⭐"],
     states: {
       idle: {
         sheet: "sprites/idle.png",
@@ -109,9 +111,10 @@ export const BUILTIN_PETS: Record<string, PetManifest> = {
     author: "Nano Banana & PomoPet",
     license: "CC-BY-4.0",
     description:
-      "Una tierna abejita animada que descansa mientras trabajas y celebra cuando completas tu sesión.",
+      "Una tierna perrita chihuahua que te acompaña en tus sesiones de enfoque y celebra cuando completas tu tiempo.",
     frameSize: [128, 128],
     render: "smooth",
+    particles: ["❤️", "🐾", "🦴", "✨", "💖"],
     states: {
       idle: {
         sheet: "sprites/idle.png",
@@ -150,6 +153,24 @@ export const BUILTIN_PETS: Record<string, PetManifest> = {
         columns: 1,
         mode: "loop",
         fps: 1,
+      },
+    },
+    clock: {
+      mode: "skinned",
+      size: [220, 64],
+      frameAsset: "sprites/clock_frame.png",
+      progress: {
+        type: "horizontal-bar",
+        inset: [14, 38, 14, 38],
+        colorFocus: "#f59e0b",
+        colorBreak: "#10b981",
+      },
+      tokens: {
+        text: "#fffbeb",
+        accent: "#f59e0b",
+        accentBreak: "#10b981",
+        background: "#28180e",
+        radius: 8,
       },
     },
   },

@@ -1,15 +1,22 @@
-import { useState, useEffect, useRef, type MouseEvent, type KeyboardEvent } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  type MouseEvent,
+  type KeyboardEvent,
+} from "react";
 import { getCurrentWindow, currentMonitor } from "@tauri-apps/api/window";
-import { ipcClient } from "../../lib/ipc/client";
+import { ipcClient, type InstalledPack } from "../../lib/ipc/client";
 import { useTimer } from "../../lib/stores/useTimer";
 import { PetRenderer } from "../../lib/pet/PetRenderer";
-import { BUILTIN_PETS } from "../../lib/pet/builtin";
+import { usePetManifest } from "../../lib/pet/usePetManifest";
 import { resolveLanguage, getPetDialogue } from "../../lib/i18n";
 import { getTheme } from "../../lib/themes/builtinThemes";
 import type { ClockLayoutProps } from "../../lib/themes/types";
 import { PetSpeechBubble } from "./PetSpeechBubble";
 import { PetHearts, type HeartParticle } from "./PetHearts";
-import { DigitalLayout, RingLayout, BarLayout, MinimalLayout, BoneLayout } from "./layouts";
+import { ClockHost } from "./ClockHost";
 
 export function OverlayApp() {
   const {
@@ -33,11 +40,27 @@ export function OverlayApp() {
   const [bubbleText, setBubbleText] = useState<string | null>(null);
   const [isBouncing, setIsBouncing] = useState(false);
   const [particles, setParticles] = useState<HeartParticle[]>([]);
+  const [installedPacks, setInstalledPacks] = useState<InstalledPack[]>([]);
 
   const currentLang = resolveLanguage(settings.language);
   const petId = settings.activePetId || "mielcita";
-  const defaultManifest = BUILTIN_PETS["mielcita"] || BUILTIN_PETS["gato-clasico"]!;
-  const manifest = BUILTIN_PETS[petId] ?? defaultManifest;
+  const { manifest } = usePetManifest(petId);
+
+  useEffect(() => {
+    void ipcClient
+      .listInstalledPacks()
+      .then(setInstalledPacks)
+      .catch(() => {});
+    const unlisten = ipcClient.onContentChanged(() => {
+      void ipcClient
+        .listInstalledPacks()
+        .then(setInstalledPacks)
+        .catch(() => {});
+    });
+    return () => {
+      void unlisten.then((fn) => fn());
+    };
+  }, []);
 
   const prevPhaseRef = useRef(snapshot.phase);
   const prevStatusRef = useRef(snapshot.status);
@@ -62,7 +85,7 @@ export function OverlayApp() {
       snapshot.status === "running" &&
       (prevStatus !== "running" || prevPhase !== "focus")
     ) {
-      setBubbleText(getPetDialogue(petId, "focusStart", currentLang));
+      setBubbleText(getPetDialogue(petId, "focusStart", currentLang, manifest));
     }
     // Transition to running break
     else if (
@@ -70,11 +93,11 @@ export function OverlayApp() {
       snapshot.status === "running" &&
       (prevStatus !== "running" || prevPhase === "focus")
     ) {
-      setBubbleText(getPetDialogue(petId, "breakStart", currentLang));
+      setBubbleText(getPetDialogue(petId, "breakStart", currentLang, manifest));
     }
     // Timer expired alert
     else if (alertActive && !prevAlert) {
-      setBubbleText(getPetDialogue(petId, "alert", currentLang));
+      setBubbleText(getPetDialogue(petId, "alert", currentLang, manifest));
     }
 
     prevPhaseRef.current = snapshot.phase;
@@ -87,6 +110,7 @@ export function OverlayApp() {
     settings.companionDialogue,
     petId,
     currentLang,
+    manifest,
   ]);
 
   useEffect(() => {
@@ -154,7 +178,20 @@ export function OverlayApp() {
 
     // Do NOT drag if clicking an interactive element (button, context menu, pet, speech bubble)
     const target = e.target as HTMLElement | null;
-    if (target?.closest("button, .context-menu, .speech-bubble, .overlay__pet-wrapper")) {
+    if (
+      target?.closest(
+        "button, .skinned-clock__right, .skinned-clock__btn, .context-menu, .speech-bubble, .overlay__pet-wrapper",
+      )
+    ) {
+      return;
+    }
+
+    // Only initiate dragging from the clock pill, themes, or drag grip
+    if (
+      !target?.closest(
+        ".overlay__pill, .layout-bar, .layout-ring, .layout-minimal, .skinned-clock, .overlay__drag-grip",
+      )
+    ) {
       return;
     }
 
@@ -172,7 +209,10 @@ export function OverlayApp() {
     setTimeout(() => setIsBouncing(false), 450);
 
     const now = Date.now();
-    const icons = ["❤️", "🐝", "✨", "🍯", "💖", "⭐"];
+    const icons =
+      manifest.particles && manifest.particles.length > 0
+        ? manifest.particles
+        : ["❤️", "✨", "💖", "⭐"];
     const getRandomIcon = () => icons[Math.floor(Math.random() * icons.length)] || "❤️";
     setParticles([
       { id: now, x: -22, driftX: -18, icon: getRandomIcon() },
@@ -182,9 +222,13 @@ export function OverlayApp() {
     setTimeout(() => setParticles([]), 950);
 
     if (settings.companionDialogue) {
-      setBubbleText(getPetDialogue(petId, "poke", currentLang));
+      setBubbleText(getPetDialogue(petId, "poke", currentLang, manifest));
     }
   };
+
+  const handleDismissBubble = useCallback(() => {
+    setBubbleText(null);
+  }, []);
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === " " || e.key === "Enter") {
@@ -219,22 +263,6 @@ export function OverlayApp() {
     onSkip: () => void skip(),
   };
 
-  const renderClockLayout = () => {
-    switch (theme.layout) {
-      case "ring":
-        return <RingLayout {...clockProps} />;
-      case "bar":
-        return <BarLayout {...clockProps} />;
-      case "minimal":
-        return <MinimalLayout {...clockProps} />;
-      case "hueso":
-        return <BoneLayout {...clockProps} />;
-      case "digital":
-      default:
-        return <DigitalLayout {...clockProps} />;
-    }
-  };
-
   return (
     <div
       className="overlay-container"
@@ -262,8 +290,9 @@ export function OverlayApp() {
         <div className="overlay__pet-area">
           <div className="speech-bubble-wrapper">
             <PetSpeechBubble
+              key={bubbleText || "bubble"}
               text={bubbleText || ""}
-              onDismiss={() => setBubbleText(null)}
+              onDismiss={handleDismissBubble}
               facingLeft={facingLeft}
             />
           </div>
@@ -285,7 +314,12 @@ export function OverlayApp() {
           </div>
         </div>
 
-        {renderClockLayout()}
+        <ClockHost
+          manifest={manifest}
+          theme={theme}
+          activeThemeId={settings.activeThemeId}
+          clockProps={clockProps}
+        />
       </main>
 
       {menuOpen && (
@@ -329,18 +363,24 @@ export function OverlayApp() {
             className="context-menu__item"
             onClick={() => {
               setMenuOpen(false);
-              const petList = ["gato-clasico", "nano-panda", "mielcita"];
-              const currentIdx = petList.indexOf(petId);
-              const nextPet = petList[(currentIdx + 1) % petList.length] || "gato-clasico";
-              void activatePet(nextPet);
+              const petIds =
+                installedPacks.length > 0
+                  ? installedPacks.map((p) => p.id)
+                  : ["gato-clasico", "nano-panda", "mielcita"];
+              const currentIdx = petIds.indexOf(petId);
+              const nextPetId = petIds[(currentIdx + 1) % petIds.length] || "gato-clasico";
+              void activatePet(nextPetId);
+              if (
+                nextPetId === "mielcita" &&
+                (!settings.activeThemeId || settings.activeThemeId === "clasico")
+              ) {
+                void ipcClient.updateSettings({ activeThemeId: "pet-skinned" });
+              } else if (nextPetId !== "mielcita" && settings.activeThemeId === "pet-skinned") {
+                void ipcClient.updateSettings({ activeThemeId: "clasico" });
+              }
             }}
           >
-            Mascota:{" "}
-            {petId === "gato-clasico"
-              ? "Usar Nano Panda"
-              : petId === "nano-panda"
-                ? "Usar Mielcita"
-                : "Usar Gato Clásico"}
+            Mascota: {manifest.name || petId} (Cambiar)
           </button>
           <button
             type="button"

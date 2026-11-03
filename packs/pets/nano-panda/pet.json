@@ -9,6 +9,7 @@
   "description": "Un adorable oso panda ilustrado con Nano Banana que come bambú y descansa contigo.",
   "frameSize": [128, 128],
   "render": "smooth",
+  "particles": ["❤️", "🎋", "✨", "🐼", "⭐"],
   "states": {
     "idle": {
       "sheet": "sprites/idle.png",
@@ -44,6 +45,47 @@
       "columns": 1,
       "mode": "loop",
       "fps": 1
+    }
+  },
+  "dialogues": {
+    "es": {
+      "focusStart": [
+        "¡Modo zen activado! Mente clara como el bambú 🎋",
+        "Paso a paso, como panda constante.",
+        "Respira hondo y enfócate."
+      ],
+      "breakStart": [
+        "¡Pausa de bambú! Estira los brazos y bebe agua 💧",
+        "Gran sesión. Un panda sabio siempre descansa.",
+        "A relajar los hombros y parpadear."
+      ],
+      "alert": [
+        "¡Ding! ¡Ciclo completado con calma y éxito! 🎋",
+        "¡Muy bien hecho! Hora de celebrar."
+      ],
+      "poke": [
+        "¡Abrazo de panda! Sigue adelante con calma ❤️",
+        "Tranquilidad y enfoque, vas de maravilla.",
+        "Aquí contigo en cada minuto 🎋"
+      ]
+    },
+    "en": {
+      "focusStart": [
+        "Zen mode activated! Mind clear like bamboo 🎋",
+        "Step by step, steady like a panda.",
+        "Take a deep breath and focus."
+      ],
+      "breakStart": [
+        "Bamboo break! Stretch your arms and hydrate 💧",
+        "Great session. A wise panda always rests.",
+        "Relax your shoulders and blink."
+      ],
+      "alert": ["Ding! Cycle completed with calm and success! 🎋", "Well done! Time to celebrate."],
+      "poke": [
+        "Panda hug! Keep moving forward ❤️",
+        "Calm and steady, you are doing wonderfully.",
+        "Right here with you every minute 🎋"
+      ]
     }
   }
 }

@@ -15,14 +15,15 @@
         "label": "overlay",
         "url": "overlay.html",
         "title": "PomoPet",
-        "width": 300,
-        "height": 360,
+        "width": 270,
+        "height": 260,
         "transparent": true,
         "decorations": false,
         "alwaysOnTop": true,
         "skipTaskbar": true,
         "resizable": false,
         "shadow": false,
+        "noRedirectionBitmap": true,
         "focus": false
       },
       {
